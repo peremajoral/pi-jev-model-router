@@ -240,9 +240,10 @@ export function decide(
 
   // Rotation is restricted to peers of the CHOSEN tier (kind specialists declared
   // for it plus the tier chain), so it can never silently move to another tier.
+  // Entries marked `fallback` are last-resort only: they never rotate.
   const peers: RouteTarget[] = [
-    ...kindChain.filter((target) => tierIndex(target.minTier) === index),
-    ...config.routes[TIERS[index]],
+    ...kindChain.filter((target) => tierIndex(target.minTier) === index && !target.fallback),
+    ...config.routes[TIERS[index]].filter((target) => !target.fallback),
   ];
   const rotation = config.rotation ?? "first";
   const rotateHere = rotation === "rotate" || (Array.isArray(rotation) && rotation.includes(TIERS[index]));

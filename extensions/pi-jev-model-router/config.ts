@@ -25,6 +25,11 @@ export interface RouteTarget {
   /** Optional thinking level pinned for this model. Clamped by pi per model. */
   thinkingLevel?: ThinkingLevel;
   /**
+   * Marks the entry as a last-resort fallback: it never joins a rotation pool
+   * and only serves when every non-fallback candidate is unavailable.
+   */
+  fallback?: boolean;
+  /**
    * Only used inside `kindModels`: this model may serve the kind when the
    * chosen tier is at or above `minTier`. Defaults to "quick".
    */
