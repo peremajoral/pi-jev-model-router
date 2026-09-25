@@ -67,6 +67,21 @@ export interface CacheConfig {
   bypassTierDelta: number;
 }
 
+/**
+ * Demand adjustment for deep (or shallow) reasoning. Previously hard-coded at
+ * +0.75 / -0.25, which jumped a whole tier on its own and was not tunable.
+ */
+export interface ReasoningConfig {
+  /** At or above this deep-reasoning probability, add `bonus`. */
+  threshold: number;
+  /** Demand added for deep reasoning. */
+  bonus: number;
+  /** At or below this deep-reasoning probability, subtract `penalty`. */
+  floor: number;
+  /** Demand subtracted for shallow reasoning. */
+  penalty: number;
+}
+
 export interface JevRouterConfig {
   enabled: boolean;
   mode: Mode;
@@ -100,6 +115,13 @@ export interface JevRouterConfig {
   kindMinimumTier: Record<string, Tier>;
   budget: BudgetConfig;
   cache: CacheConfig;
+  /** Tunable reasoning adjustment (was hard-coded). */
+  reasoning: ReasoningConfig;
+  /**
+   * Candidate selection inside the chosen tier: "first" (deterministic, default),
+   * "rotate" (round-robin everywhere), or a list of tiers to rotate in.
+   */
+  rotation: "first" | "rotate" | Tier[];
 }
 
 export const DEFAULT_CONFIG: JevRouterConfig = {
@@ -218,6 +240,13 @@ export const DEFAULT_CONFIG: JevRouterConfig = {
     maxPenaltyUsd: 0.05,
     bypassTierDelta: 2,
   },
+  reasoning: {
+    threshold: 0.65,
+    bonus: 0.75,
+    floor: 0.2,
+    penalty: 0.25,
+  },
+  rotation: "first",
 };
 
 function readJson(path: string): unknown | undefined {
@@ -263,6 +292,7 @@ function merge(base: JevRouterConfig, patch: unknown): JevRouterConfig {
     kindModels,
     budget: { ...base.budget, ...asRecord(p.budget) } as BudgetConfig,
     cache: { ...base.cache, ...asRecord(p.cache) } as CacheConfig,
+    reasoning: { ...base.reasoning, ...asRecord(p.reasoning) } as ReasoningConfig,
     kindMinimumTier: {
       ...base.kindMinimumTier,
       ...(asRecord(p.kindMinimumTier) as Record<string, Tier>),

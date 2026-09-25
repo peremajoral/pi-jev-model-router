@@ -64,6 +64,39 @@ export function firstAvailable(
   return undefined;
 }
 
+/**
+ * Round-robin cursor per (kind, tier), so equal-tier peers take turns instead of
+ * always resolving to the first one. In-memory only: a restart resets the rotation.
+ */
+const rotationCursor = new Map<string, number>();
+
+/**
+ * Like `firstAvailable`, but rotates among the available candidates of the pool.
+ * Falls back to the deterministic order when the pool has nothing available.
+ */
+function rotatingAvailable(
+  models: readonly AvailableModel[],
+  pool: readonly RouteTarget[],
+  key: string,
+  fallback: readonly RouteTarget[],
+): { target: RouteTarget; model: AvailableModel } | undefined {
+  const seen = new Set<string>();
+  const avail: { target: RouteTarget; model: AvailableModel }[] = [];
+  for (const target of pool) {
+    const model = findModel(models, target);
+    const k = `${target.provider}/${target.model}`;
+    if (model && !seen.has(k)) {
+      seen.add(k);
+      avail.push({ target, model });
+    }
+  }
+  if (avail.length === 0) return firstAvailable(models, fallback);
+  const start = rotationCursor.get(key) ?? 0;
+  const pick = avail[start % avail.length];
+  rotationCursor.set(key, (start + 1) % avail.length);
+  return pick;
+}
+
 /** Best-effort reverse lookup: which tier does this model key sit on? */
 export function tierForModel(modelKey: string | undefined, config: JevRouterConfig): number | undefined {
   if (!modelKey) return undefined;
@@ -146,8 +179,9 @@ export function decide(
   const { spend } = options;
 
   let demand = 0.55 * analysis.complexity + 0.45 * analysis.budgetIntensity;
-  if (analysis.deepReasoning >= 0.65) demand += 0.75;
-  else if (analysis.deepReasoning <= 0.2) demand -= 0.25;
+  const reasoning = config.reasoning ?? { threshold: 0.65, bonus: 0.75, floor: 0.2, penalty: 0.25 };
+  if (analysis.deepReasoning >= reasoning.threshold) demand += reasoning.bonus;
+  else if (analysis.deepReasoning <= reasoning.floor) demand -= reasoning.penalty;
   demand = clamp(demand, 0, 3);
 
   const kindFloor = tierIndex(config.kindMinimumTier[analysis.kind] ?? "quick");
@@ -204,7 +238,17 @@ export function decide(
     if (index + offset < TIERS.length) ordered.push(...config.routes[TIERS[index + offset]]);
   }
 
-  const available = firstAvailable(options.models, ordered);
+  // Rotation is restricted to peers of the CHOSEN tier (kind specialists declared
+  // for it plus the tier chain), so it can never silently move to another tier.
+  const peers: RouteTarget[] = [
+    ...kindChain.filter((target) => tierIndex(target.minTier) === index),
+    ...config.routes[TIERS[index]],
+  ];
+  const rotation = config.rotation ?? "first";
+  const rotateHere = rotation === "rotate" || (Array.isArray(rotation) && rotation.includes(TIERS[index]));
+  const available = rotateHere
+    ? rotatingAvailable(options.models, peers, `${analysis.kind}:${TIERS[index]}`, ordered)
+    : firstAvailable(options.models, ordered);
   if (!available) return undefined;
 
   const currentIndex = options.current?.index;

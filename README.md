@@ -433,6 +433,8 @@ entirely when a model's pricing is unknown, so it never blocks on guesses. Set
 | `kindMinimumTier` | see above | Per-kind floor tier |
 | `budget` | no caps | Spend policy |
 | `cache` | `aware`, cap `$0.05`, deadband `0.25` | Prompt-cache-aware switching |
+| `reasoning` | `threshold 0.65`, `bonus 0.75`, `floor 0.2`, `penalty 0.25` | Demand adjustment for deep/shallow reasoning (was hard-coded) |
+| `rotation` | `"first"` | Candidate selection inside the chosen tier: `"first"`, `"rotate"`, or a list of tiers e.g. `["quick"]` |
 | `stateFile` | `~/.pi/agent/pi-jev-model-router-state.json` | Spend ledger |
 
 ## Failure behaviour
