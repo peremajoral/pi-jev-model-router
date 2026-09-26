@@ -49,5 +49,8 @@
     "@earendil-works/pi-tui": {
       "optional": true
     }
+  },
+  "scripts": {
+    "test": "node --test --test-force-exit system-zero/system-zero.test.ts"
   }
 }
