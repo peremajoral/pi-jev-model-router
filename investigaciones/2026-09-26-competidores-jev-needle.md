@@ -174,7 +174,11 @@ El router son 478k tokens. **El campo de batalla es `find`**: 6.066 llamadas × 
 
 **Palancas, por orden de coste/beneficio:**
 
-1. **No llamar a Jev cuando el determinismo basta (GRATIS, sin modelos).** Si la query de `find` nombra un identificador o ruta que aparece **literal** en el repo, ripgrep/AST lo resuelve sin juez. Esta es la mitad "prefiltro duro" del bead 4y5.8 que se cerró con needle y **nunca se implementó sola** — el fallo de needle no dice nada contra el prefiltro determinista. Requiere medir antes: ¿qué % de las 6.066 llamadas son resolubles por coincidencia literal? Hay banco/logs para medirlo.
+1. **No llamar a Jev cuando el determinismo basta.** Hipótesis original: si la query de `find` nombra un identificador/ruta que aparece **literal** en el repo, ripgrep/AST lo resuelve sin juez. **MEDIDO Y REFUTADO (2026-09-26, jev-8ex)** sobre 9 runs reales / 181 frames / 891 candidatos / 925.084 tokens:
+   - 66,7% de candidatos tienen cero solapamiento léxico, pero podarlos pierde el **12,5% de los relevantes**, incluido el **rank-1 y el rank-2** de un run cuya tarea estaba en español (`presupuesto de ejecución` vs `budget/executor`).
+   - Shortlist léxico top-K (con glosario es→en) contiene el rank-1 del packet solo **5/9** runs con K=10–20, y ~5x de ahorro proyectado: no compensa.
+   - Desglose del gasto: `candidate_meta@2` 49 frames (~9,7k tok/frame) + `candidate_excerpt@2` 132 frames (~3,3k tok/frame) = **la mitad es leer el contenido del candidato y juzgarlo**, una llamada por candidato. Semántica pura.
+   - Conclusión: **el juicio de find ES el trabajo** (confirma por otra vía el 0% de needle). La palanca gratis en find es la caché, no un prefiltro.
 2. **Caché de veredictos (HECHO)**: re-juicio idéntico = 0 tokens (medido 42.653 → 0).
 3. **Caps mecánicos (HECHO)**: lockfiles/espacios/renombres sin juez.
 4. **Clasificador fino como GATE, no como juez**: "¿esta query necesita Jev?" entrenado sobre los logs. Sub-ms, gratis, probabilidad real. Regla dura: el gate solo puede **apagar** el juez cuando el camino determinista ya resolvió; jamás aprobar por su cuenta.
@@ -184,7 +188,7 @@ El router son 478k tokens. **El campo de batalla es `find`**: 6.066 llamadas × 
 
 **Respuesta honesta a "¿es posible que no encontremos nada?"**
 - Para **juzgar con calidad**: hoy no hay sustituto gratis **medido** (needle perdió en los 4 consumidores; Apple FM/PR-Agent+HQ/gramática aún no se han medido). No es que no exista: es que no se sabe todavía.
-- Para **no gastar Jev**: sí hay una palanca grande y gratis — el **94,8% del consumo es `find`**, y una parte de ese trabajo es coincidencia mecánica que no necesita juez. Buscar ahí, no en sustituir al juez.
+- Para **no gastar Jev**: la palanca mecánica en `find` está **medida y refutada** (ver arriba): podar por coincidencia literal tira el rank-1 en 4/9 runs. El ahorro real ya entregado es la **caché de veredictos** (42.653 → 0) y los caps mecánicos. Lo que quede hay que buscarlo en batching de frames o en modelos locales medidos, nunca en "el determinista ya lo resuelve".
 
 ## Fuentes fetchadas (2026-09-26)
 - Autoevals: https://raw.githubusercontent.com/braintrustdata/autoevals/main/README.md
