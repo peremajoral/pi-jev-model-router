@@ -1,0 +1,503 @@
+{
+  "report": {
+    "bank": "find",
+    "cases": 17,
+    "labels": [
+      "adapters/config.ts",
+      "adapters/dependencies.ts",
+      "adapters/fake-jev.ts",
+      "adapters/jev.ts",
+      "adapters/recorder.ts",
+      "adapters/redact.ts",
+      "adapters/verdict-cache.ts",
+      "cli/judge.ts",
+      "cli/router.ts",
+      "core/budget.ts",
+      "core/executor.ts",
+      "core/frame.ts",
+      "core/hash.ts",
+      "core/questions.ts",
+      "core/validation.ts",
+      "workflows/common.ts",
+      "workflows/run.ts"
+    ],
+    "needleAvailable": 10,
+    "jevAvailable": 17,
+    "agreement": 0,
+    "confusionNeedle": {
+      "core/budget.ts": {
+        "BudgetLimits": 1
+      },
+      "core/questions.ts": {
+        "stableId('f')": 1
+      },
+      "core/hash.ts": {
+        "export_interface_choiceAnswer<Lext({});": 1
+      },
+      "adapters/recorder.ts": {
+        "verdicts": 1
+      },
+      "adapters/jev.ts": {
+        "Latest": 1
+      },
+      "adapters/dependencies.ts": {
+        "flag: string | undefined": 1
+      },
+      "adapters/redact.ts": {
+        "Candidato elegido": 1
+      },
+      "workflows/run.ts": {
+        "whole section": 1
+      },
+      "workflows/common.ts": {
+        "Sunday": 1
+      },
+      "cli/judge.ts": {
+        "cannot_tell": 1
+      }
+    },
+    "confusionJev": {
+      "core/executor.ts": {
+        "core/executor.ts": 1
+      },
+      "core/budget.ts": {
+        "core/budget.ts": 1
+      },
+      "core/frame.ts": {
+        "core/frame.ts": 1
+      },
+      "core/questions.ts": {
+        "core/questions.ts": 1
+      },
+      "core/validation.ts": {
+        "core/validation.ts": 1
+      },
+      "core/hash.ts": {
+        "core/hash.ts": 1
+      },
+      "adapters/verdict-cache.ts": {
+        "adapters/verdict-cache.ts": 1
+      },
+      "adapters/recorder.ts": {
+        "adapters/recorder.ts": 1
+      },
+      "adapters/jev.ts": {
+        "adapters/jev.ts": 1
+      },
+      "adapters/fake-jev.ts": {
+        "adapters/fake-jev.ts": 1
+      },
+      "adapters/dependencies.ts": {
+        "adapters/dependencies.ts": 1
+      },
+      "adapters/config.ts": {
+        "adapters/config.ts": 1
+      },
+      "adapters/redact.ts": {
+        "adapters/redact.ts": 1
+      },
+      "workflows/run.ts": {
+        "workflows/run.ts": 1
+      },
+      "workflows/common.ts": {
+        "workflows/common.ts": 1
+      },
+      "cli/judge.ts": {
+        "cli/judge.ts": 1
+      },
+      "cli/router.ts": {
+        "cli/router.ts": 1
+      }
+    },
+    "accuracyNeedle": 0,
+    "accuracyJev": 1,
+    "thresholds": [
+      {
+        "threshold": 0.5,
+        "covered": 6,
+        "coverage": 0.35294117647058826,
+        "answeredCorrect": 0,
+        "answeredWrong": 6,
+        "accuracyAnswered": 0,
+        "highConfFalse": 6,
+        "systemCorrect": 11,
+        "systemAccuracy": 0.6470588235294118,
+        "escalated": 11
+      },
+      {
+        "threshold": 0.6,
+        "covered": 3,
+        "coverage": 0.17647058823529413,
+        "answeredCorrect": 0,
+        "answeredWrong": 3,
+        "accuracyAnswered": 0,
+        "highConfFalse": 3,
+        "systemCorrect": 14,
+        "systemAccuracy": 0.8235294117647058,
+        "escalated": 14
+      },
+      {
+        "threshold": 0.7,
+        "covered": 2,
+        "coverage": 0.11764705882352941,
+        "answeredCorrect": 0,
+        "answeredWrong": 2,
+        "accuracyAnswered": 0,
+        "highConfFalse": 2,
+        "systemCorrect": 15,
+        "systemAccuracy": 0.8823529411764706,
+        "escalated": 15
+      },
+      {
+        "threshold": 0.8,
+        "covered": 2,
+        "coverage": 0.11764705882352941,
+        "answeredCorrect": 0,
+        "answeredWrong": 2,
+        "accuracyAnswered": 0,
+        "highConfFalse": 2,
+        "systemCorrect": 15,
+        "systemAccuracy": 0.8823529411764706,
+        "escalated": 15
+      },
+      {
+        "threshold": 0.85,
+        "covered": 2,
+        "coverage": 0.11764705882352941,
+        "answeredCorrect": 0,
+        "answeredWrong": 2,
+        "accuracyAnswered": 0,
+        "highConfFalse": 2,
+        "systemCorrect": 15,
+        "systemAccuracy": 0.8823529411764706,
+        "escalated": 15
+      },
+      {
+        "threshold": 0.9,
+        "covered": 1,
+        "coverage": 0.058823529411764705,
+        "answeredCorrect": 0,
+        "answeredWrong": 1,
+        "accuracyAnswered": 0,
+        "highConfFalse": 1,
+        "systemCorrect": 16,
+        "systemAccuracy": 0.9411764705882353,
+        "escalated": 16
+      },
+      {
+        "threshold": 0.95,
+        "covered": 1,
+        "coverage": 0.058823529411764705,
+        "answeredCorrect": 0,
+        "answeredWrong": 1,
+        "accuracyAnswered": 0,
+        "highConfFalse": 1,
+        "systemCorrect": 16,
+        "systemAccuracy": 0.9411764705882353,
+        "escalated": 16
+      }
+    ],
+    "latency": {
+      "needleMs": 532.1,
+      "jevMs": 330.47058823529414
+    }
+  },
+  "outcomes": [
+    {
+      "id": "find-00",
+      "label": "core/executor.ts",
+      "accept": [
+        "core/executor.ts"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 414,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "core/executor.ts",
+        "confidence": 0.98,
+        "latencyMs": 489
+      }
+    },
+    {
+      "id": "find-01",
+      "label": "core/budget.ts",
+      "accept": [
+        "core/budget.ts"
+      ],
+      "needle": {
+        "choice": "BudgetLimits",
+        "confidence": 0.8898,
+        "latencyMs": 296
+      },
+      "jev": {
+        "choice": "core/budget.ts",
+        "confidence": 0.76,
+        "latencyMs": 316
+      }
+    },
+    {
+      "id": "find-02",
+      "label": "core/frame.ts",
+      "accept": [
+        "core/frame.ts"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 353,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "core/frame.ts",
+        "confidence": 1,
+        "latencyMs": 314
+      }
+    },
+    {
+      "id": "find-03",
+      "label": "core/questions.ts",
+      "accept": [
+        "core/questions.ts"
+      ],
+      "needle": {
+        "choice": "stableId('f')",
+        "confidence": 0.5629,
+        "latencyMs": 330
+      },
+      "jev": {
+        "choice": "core/questions.ts",
+        "confidence": 0.99,
+        "latencyMs": 333
+      }
+    },
+    {
+      "id": "find-04",
+      "label": "core/validation.ts",
+      "accept": [
+        "core/validation.ts"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 317,
+        "error": "refusal"
+      },
+      "jev": {
+        "choice": "core/validation.ts",
+        "confidence": 0.95,
+        "latencyMs": 253
+      }
+    },
+    {
+      "id": "find-05",
+      "label": "core/hash.ts",
+      "accept": [
+        "core/hash.ts"
+      ],
+      "needle": {
+        "choice": "export_interface_choiceAnswer<Lext({});",
+        "confidence": 0.2459,
+        "latencyMs": 375
+      },
+      "jev": {
+        "choice": "core/hash.ts",
+        "confidence": 1,
+        "latencyMs": 297
+      }
+    },
+    {
+      "id": "find-06",
+      "label": "adapters/verdict-cache.ts",
+      "accept": [
+        "adapters/verdict-cache.ts"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 1129,
+        "error": "unavailable"
+      },
+      "jev": {
+        "choice": "adapters/verdict-cache.ts",
+        "confidence": 1,
+        "latencyMs": 346
+      }
+    },
+    {
+      "id": "find-07",
+      "label": "adapters/recorder.ts",
+      "accept": [
+        "adapters/recorder.ts"
+      ],
+      "needle": {
+        "choice": "verdicts",
+        "confidence": 0.4436,
+        "latencyMs": 1039
+      },
+      "jev": {
+        "choice": "adapters/recorder.ts",
+        "confidence": 1,
+        "latencyMs": 458
+      }
+    },
+    {
+      "id": "find-08",
+      "label": "adapters/jev.ts",
+      "accept": [
+        "adapters/jev.ts"
+      ],
+      "needle": {
+        "choice": "Latest",
+        "confidence": 0.1037,
+        "latencyMs": 806
+      },
+      "jev": {
+        "choice": "adapters/jev.ts",
+        "confidence": 1,
+        "latencyMs": 321
+      }
+    },
+    {
+      "id": "find-09",
+      "label": "adapters/fake-jev.ts",
+      "accept": [
+        "adapters/fake-jev.ts"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 339,
+        "error": "refusal"
+      },
+      "jev": {
+        "choice": "adapters/fake-jev.ts",
+        "confidence": 1,
+        "latencyMs": 313
+      }
+    },
+    {
+      "id": "find-10",
+      "label": "adapters/dependencies.ts",
+      "accept": [
+        "adapters/dependencies.ts"
+      ],
+      "needle": {
+        "choice": "flag: string | undefined",
+        "confidence": 0.5671,
+        "latencyMs": 331
+      },
+      "jev": {
+        "choice": "adapters/dependencies.ts",
+        "confidence": 0.87,
+        "latencyMs": 285
+      }
+    },
+    {
+      "id": "find-11",
+      "label": "adapters/config.ts",
+      "accept": [
+        "adapters/config.ts"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 543,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "adapters/config.ts",
+        "confidence": 0.99,
+        "latencyMs": 325
+      }
+    },
+    {
+      "id": "find-12",
+      "label": "adapters/redact.ts",
+      "accept": [
+        "adapters/redact.ts"
+      ],
+      "needle": {
+        "choice": "Candidato elegido",
+        "confidence": 0.5031,
+        "latencyMs": 459
+      },
+      "jev": {
+        "choice": "adapters/redact.ts",
+        "confidence": 1,
+        "latencyMs": 365
+      }
+    },
+    {
+      "id": "find-13",
+      "label": "workflows/run.ts",
+      "accept": [
+        "workflows/run.ts"
+      ],
+      "needle": {
+        "choice": "whole section",
+        "confidence": 0.6193,
+        "latencyMs": 404
+      },
+      "jev": {
+        "choice": "workflows/run.ts",
+        "confidence": 1,
+        "latencyMs": 331
+      }
+    },
+    {
+      "id": "find-14",
+      "label": "workflows/common.ts",
+      "accept": [
+        "workflows/common.ts"
+      ],
+      "needle": {
+        "choice": "Sunday",
+        "confidence": 0.3291,
+        "latencyMs": 856
+      },
+      "jev": {
+        "choice": "workflows/common.ts",
+        "confidence": 0.57,
+        "latencyMs": 303
+      }
+    },
+    {
+      "id": "find-15",
+      "label": "cli/judge.ts",
+      "accept": [
+        "cli/judge.ts"
+      ],
+      "needle": {
+        "choice": "cannot_tell",
+        "confidence": 0.992,
+        "latencyMs": 425
+      },
+      "jev": {
+        "choice": "cli/judge.ts",
+        "confidence": 0.99,
+        "latencyMs": 293
+      }
+    },
+    {
+      "id": "find-16",
+      "label": "cli/router.ts",
+      "accept": [
+        "cli/router.ts"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 504,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "cli/router.ts",
+        "confidence": 0.91,
+        "latencyMs": 276
+      }
+    }
+  ]
+}

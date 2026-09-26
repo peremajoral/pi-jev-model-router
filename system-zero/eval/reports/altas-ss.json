@@ -1,0 +1,474 @@
+{
+  "report": {
+    "bank": "altas-ss",
+    "cases": 20,
+    "labels": [
+      "recuperable_pdf",
+      "registro_cancelacion",
+      "terminal_humano"
+    ],
+    "needleAvailable": 19,
+    "jevAvailable": 20,
+    "agreement": 0,
+    "confusionNeedle": {
+      "recuperable_pdf": {
+        "recuperar_pdf": 10
+      },
+      "terminal_humano": {
+        "recuperar_pdf": 4
+      },
+      "registro_cancelacion": {
+        "recuperar_pdf": 5
+      }
+    },
+    "confusionJev": {
+      "recuperable_pdf": {
+        "terminal_humano": 7,
+        "recuperable_pdf": 3
+      },
+      "terminal_humano": {
+        "recuperable_pdf": 3,
+        "terminal_humano": 1
+      },
+      "registro_cancelacion": {
+        "terminal_humano": 3,
+        "registro_cancelacion": 3
+      }
+    },
+    "accuracyNeedle": 0,
+    "accuracyJev": 0.35,
+    "thresholds": [
+      {
+        "threshold": 0.5,
+        "covered": 19,
+        "coverage": 0.95,
+        "answeredCorrect": 0,
+        "answeredWrong": 19,
+        "accuracyAnswered": 0,
+        "highConfFalse": 19,
+        "systemCorrect": 0,
+        "systemAccuracy": 0,
+        "escalated": 1
+      },
+      {
+        "threshold": 0.6,
+        "covered": 19,
+        "coverage": 0.95,
+        "answeredCorrect": 0,
+        "answeredWrong": 19,
+        "accuracyAnswered": 0,
+        "highConfFalse": 19,
+        "systemCorrect": 0,
+        "systemAccuracy": 0,
+        "escalated": 1
+      },
+      {
+        "threshold": 0.7,
+        "covered": 19,
+        "coverage": 0.95,
+        "answeredCorrect": 0,
+        "answeredWrong": 19,
+        "accuracyAnswered": 0,
+        "highConfFalse": 19,
+        "systemCorrect": 0,
+        "systemAccuracy": 0,
+        "escalated": 1
+      },
+      {
+        "threshold": 0.8,
+        "covered": 17,
+        "coverage": 0.85,
+        "answeredCorrect": 0,
+        "answeredWrong": 17,
+        "accuracyAnswered": 0,
+        "highConfFalse": 17,
+        "systemCorrect": 1,
+        "systemAccuracy": 0.05,
+        "escalated": 3
+      },
+      {
+        "threshold": 0.85,
+        "covered": 17,
+        "coverage": 0.85,
+        "answeredCorrect": 0,
+        "answeredWrong": 17,
+        "accuracyAnswered": 0,
+        "highConfFalse": 17,
+        "systemCorrect": 1,
+        "systemAccuracy": 0.05,
+        "escalated": 3
+      },
+      {
+        "threshold": 0.9,
+        "covered": 16,
+        "coverage": 0.8,
+        "answeredCorrect": 0,
+        "answeredWrong": 16,
+        "accuracyAnswered": 0,
+        "highConfFalse": 16,
+        "systemCorrect": 2,
+        "systemAccuracy": 0.1,
+        "escalated": 4
+      },
+      {
+        "threshold": 0.95,
+        "covered": 16,
+        "coverage": 0.8,
+        "answeredCorrect": 0,
+        "answeredWrong": 16,
+        "accuracyAnswered": 0,
+        "highConfFalse": 16,
+        "systemCorrect": 2,
+        "systemAccuracy": 0.1,
+        "escalated": 4
+      }
+    ],
+    "latency": {
+      "needleMs": 206.73684210526315,
+      "jevMs": 319.9
+    }
+  },
+  "outcomes": [
+    {
+      "id": "alt-01",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.985,
+        "latencyMs": 301
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.32,
+        "latencyMs": 450
+      }
+    },
+    {
+      "id": "alt-02",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9852,
+        "latencyMs": 170
+      },
+      "jev": {
+        "choice": "recuperable_pdf",
+        "confidence": 0.71,
+        "latencyMs": 499
+      }
+    },
+    {
+      "id": "alt-03",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9708,
+        "latencyMs": 234
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.54,
+        "latencyMs": 263
+      }
+    },
+    {
+      "id": "alt-04",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9886,
+        "latencyMs": 216
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.67,
+        "latencyMs": 298
+      }
+    },
+    {
+      "id": "alt-05",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9854,
+        "latencyMs": 177
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.63,
+        "latencyMs": 345
+      }
+    },
+    {
+      "id": "alt-06",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9852,
+        "latencyMs": 207
+      },
+      "jev": {
+        "choice": "recuperable_pdf",
+        "confidence": 0.53,
+        "latencyMs": 293
+      }
+    },
+    {
+      "id": "alt-07",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9868,
+        "latencyMs": 177
+      },
+      "jev": {
+        "choice": "recuperable_pdf",
+        "confidence": 0.49,
+        "latencyMs": 302
+      }
+    },
+    {
+      "id": "alt-08",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9886,
+        "latencyMs": 197
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.41,
+        "latencyMs": 302
+      }
+    },
+    {
+      "id": "alt-09",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9692,
+        "latencyMs": 208
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.67,
+        "latencyMs": 300
+      }
+    },
+    {
+      "id": "alt-10",
+      "label": "recuperable_pdf",
+      "accept": [
+        "recuperable_pdf"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9707,
+        "latencyMs": 134
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.82,
+        "latencyMs": 348
+      }
+    },
+    {
+      "id": "alt-11",
+      "label": "terminal_humano",
+      "accept": [
+        "terminal_humano"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9888,
+        "latencyMs": 191
+      },
+      "jev": {
+        "choice": "recuperable_pdf",
+        "confidence": 0.29,
+        "latencyMs": 298
+      }
+    },
+    {
+      "id": "alt-12",
+      "label": "terminal_humano",
+      "accept": [
+        "terminal_humano"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9877,
+        "latencyMs": 202
+      },
+      "jev": {
+        "choice": "recuperable_pdf",
+        "confidence": 0.32,
+        "latencyMs": 280
+      }
+    },
+    {
+      "id": "alt-13",
+      "label": "terminal_humano",
+      "accept": [
+        "terminal_humano"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9857,
+        "latencyMs": 184
+      },
+      "jev": {
+        "choice": "recuperable_pdf",
+        "confidence": 0.36,
+        "latencyMs": 265
+      }
+    },
+    {
+      "id": "alt-14",
+      "label": "terminal_humano",
+      "accept": [
+        "terminal_humano"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9837,
+        "latencyMs": 180
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.39,
+        "latencyMs": 325
+      }
+    },
+    {
+      "id": "alt-15",
+      "label": "registro_cancelacion",
+      "accept": [
+        "registro_cancelacion"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 219,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.52,
+        "latencyMs": 293
+      }
+    },
+    {
+      "id": "alt-16",
+      "label": "registro_cancelacion",
+      "accept": [
+        "registro_cancelacion"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9523,
+        "latencyMs": 244
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.7,
+        "latencyMs": 268
+      }
+    },
+    {
+      "id": "alt-17",
+      "label": "registro_cancelacion",
+      "accept": [
+        "registro_cancelacion"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.9625,
+        "latencyMs": 210
+      },
+      "jev": {
+        "choice": "registro_cancelacion",
+        "confidence": 0.36,
+        "latencyMs": 312
+      }
+    },
+    {
+      "id": "alt-18",
+      "label": "registro_cancelacion",
+      "accept": [
+        "registro_cancelacion"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.7204,
+        "latencyMs": 225
+      },
+      "jev": {
+        "choice": "terminal_humano",
+        "confidence": 0.25,
+        "latencyMs": 291
+      }
+    },
+    {
+      "id": "alt-19",
+      "label": "registro_cancelacion",
+      "accept": [
+        "registro_cancelacion"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.7446,
+        "latencyMs": 215
+      },
+      "jev": {
+        "choice": "registro_cancelacion",
+        "confidence": 0.45,
+        "latencyMs": 291
+      }
+    },
+    {
+      "id": "alt-20",
+      "label": "registro_cancelacion",
+      "accept": [
+        "registro_cancelacion"
+      ],
+      "needle": {
+        "choice": "recuperar_pdf",
+        "confidence": 0.8992,
+        "latencyMs": 256
+      },
+      "jev": {
+        "choice": "registro_cancelacion",
+        "confidence": 0.4,
+        "latencyMs": 375
+      }
+    }
+  ]
+}

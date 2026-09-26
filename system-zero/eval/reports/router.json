@@ -1,0 +1,1219 @@
+{
+  "report": {
+    "bank": "router",
+    "cases": 60,
+    "labels": [
+      "chat",
+      "debug",
+      "explain",
+      "implement",
+      "operate",
+      "plan",
+      "research",
+      "review"
+    ],
+    "needleAvailable": 55,
+    "jevAvailable": 60,
+    "agreement": 0.05454545454545454,
+    "confusionNeedle": {
+      "operate": {
+        "review": 6,
+        "refactor": 2
+      },
+      "plan": {
+        "review": 3,
+        "refactor": 1,
+        "plan": 1
+      },
+      "chat": {
+        "review": 7,
+        "refactor": 8
+      },
+      "implement": {
+        "review": 8,
+        "refactor": 2,
+        "plan": 1
+      },
+      "explain": {
+        "review": 3,
+        "refactor": 1
+      },
+      "debug": {
+        "review": 6,
+        "refactor": 3
+      },
+      "research": {
+        "review": 1,
+        "refactor": 1
+      },
+      "review": {
+        "review": 1
+      }
+    },
+    "confusionJev": {
+      "operate": {
+        "operate": 5,
+        "chat": 2,
+        "explain": 1,
+        "implement": 1
+      },
+      "plan": {
+        "research": 1,
+        "explain": 1,
+        "plan": 2,
+        "review": 1
+      },
+      "chat": {
+        "chat": 13,
+        "operate": 1,
+        "explain": 1
+      },
+      "implement": {
+        "chat": 5,
+        "write": 2,
+        "implement": 5,
+        "operate": 2
+      },
+      "explain": {
+        "chat": 1,
+        "explain": 3
+      },
+      "debug": {
+        "debug": 5,
+        "chat": 3,
+        "explain": 2
+      },
+      "research": {
+        "research": 1,
+        "explain": 1
+      },
+      "review": {
+        "review": 1
+      }
+    },
+    "accuracyNeedle": 0.09090909090909091,
+    "accuracyJev": 0.43333333333333335,
+    "thresholds": [
+      {
+        "threshold": 0.5,
+        "covered": 53,
+        "coverage": 0.8833333333333333,
+        "answeredCorrect": 5,
+        "answeredWrong": 48,
+        "accuracyAnswered": 0.09433962264150944,
+        "highConfFalse": 48,
+        "systemCorrect": 6,
+        "systemAccuracy": 0.1,
+        "escalated": 7
+      },
+      {
+        "threshold": 0.6,
+        "covered": 51,
+        "coverage": 0.85,
+        "answeredCorrect": 5,
+        "answeredWrong": 46,
+        "accuracyAnswered": 0.09803921568627451,
+        "highConfFalse": 46,
+        "systemCorrect": 7,
+        "systemAccuracy": 0.11666666666666667,
+        "escalated": 9
+      },
+      {
+        "threshold": 0.7,
+        "covered": 47,
+        "coverage": 0.7833333333333333,
+        "answeredCorrect": 5,
+        "answeredWrong": 42,
+        "accuracyAnswered": 0.10638297872340426,
+        "highConfFalse": 42,
+        "systemCorrect": 8,
+        "systemAccuracy": 0.13333333333333333,
+        "escalated": 13
+      },
+      {
+        "threshold": 0.8,
+        "covered": 46,
+        "coverage": 0.7666666666666667,
+        "answeredCorrect": 5,
+        "answeredWrong": 41,
+        "accuracyAnswered": 0.10869565217391304,
+        "highConfFalse": 41,
+        "systemCorrect": 9,
+        "systemAccuracy": 0.15,
+        "escalated": 14
+      },
+      {
+        "threshold": 0.85,
+        "covered": 44,
+        "coverage": 0.7333333333333333,
+        "answeredCorrect": 5,
+        "answeredWrong": 39,
+        "accuracyAnswered": 0.11363636363636363,
+        "highConfFalse": 39,
+        "systemCorrect": 11,
+        "systemAccuracy": 0.18333333333333332,
+        "escalated": 16
+      },
+      {
+        "threshold": 0.9,
+        "covered": 40,
+        "coverage": 0.6666666666666666,
+        "answeredCorrect": 5,
+        "answeredWrong": 35,
+        "accuracyAnswered": 0.125,
+        "highConfFalse": 35,
+        "systemCorrect": 11,
+        "systemAccuracy": 0.18333333333333332,
+        "escalated": 20
+      },
+      {
+        "threshold": 0.95,
+        "covered": 37,
+        "coverage": 0.6166666666666667,
+        "answeredCorrect": 5,
+        "answeredWrong": 32,
+        "accuracyAnswered": 0.13513513513513514,
+        "highConfFalse": 32,
+        "systemCorrect": 14,
+        "systemAccuracy": 0.23333333333333334,
+        "escalated": 23
+      }
+    ],
+    "latency": {
+      "needleMs": 81.49090909090908,
+      "jevMs": 324.15
+    }
+  },
+  "outcomes": [
+    {
+      "id": "rtr-00",
+      "label": "operate",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9767,
+        "latencyMs": 398
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 0.91,
+        "latencyMs": 497
+      }
+    },
+    {
+      "id": "rtr-01",
+      "label": "plan",
+      "accept": [
+        "plan"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.8641,
+        "latencyMs": 100
+      },
+      "jev": {
+        "choice": "research",
+        "confidence": 0.91,
+        "latencyMs": 308
+      }
+    },
+    {
+      "id": "rtr-02",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9885,
+        "latencyMs": 79
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.98,
+        "latencyMs": 348
+      }
+    },
+    {
+      "id": "rtr-03",
+      "label": "implement",
+      "accept": [
+        "review",
+        "chat"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9849,
+        "latencyMs": 66
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.58,
+        "latencyMs": 278
+      }
+    },
+    {
+      "id": "rtr-04",
+      "label": "implement",
+      "accept": [
+        "operate",
+        "plan"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.2638,
+        "latencyMs": 58
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.6,
+        "latencyMs": 299
+      }
+    },
+    {
+      "id": "rtr-05",
+      "label": "operate",
+      "accept": [
+        "implement"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.8947,
+        "latencyMs": 78
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.91,
+        "latencyMs": 332
+      }
+    },
+    {
+      "id": "rtr-06",
+      "label": "explain",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9911,
+        "latencyMs": 77
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.61,
+        "latencyMs": 331
+      }
+    },
+    {
+      "id": "rtr-07",
+      "label": "debug",
+      "accept": [
+        "debug"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.7179,
+        "latencyMs": 106
+      },
+      "jev": {
+        "choice": "debug",
+        "confidence": 0.99,
+        "latencyMs": 328
+      }
+    },
+    {
+      "id": "rtr-08",
+      "label": "implement",
+      "accept": [
+        "review",
+        "chat"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 117,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.59,
+        "latencyMs": 322
+      }
+    },
+    {
+      "id": "rtr-09",
+      "label": "implement",
+      "accept": [
+        "explain"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.8993,
+        "latencyMs": 65
+      },
+      "jev": {
+        "choice": "write",
+        "confidence": 0.42,
+        "latencyMs": 257
+      }
+    },
+    {
+      "id": "rtr-10",
+      "label": "research",
+      "accept": [
+        "research"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 1,
+        "latencyMs": 68
+      },
+      "jev": {
+        "choice": "research",
+        "confidence": 0.87,
+        "latencyMs": 288
+      }
+    },
+    {
+      "id": "rtr-11",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.5401,
+        "latencyMs": 61
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 1,
+        "latencyMs": 286
+      }
+    },
+    {
+      "id": "rtr-12",
+      "label": "chat",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9767,
+        "latencyMs": 103
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.67,
+        "latencyMs": 277
+      }
+    },
+    {
+      "id": "rtr-13",
+      "label": "debug",
+      "accept": [
+        "debug"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9938,
+        "latencyMs": 60
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.85,
+        "latencyMs": 289
+      }
+    },
+    {
+      "id": "rtr-14",
+      "label": "operate",
+      "accept": [
+        "plan",
+        "implement"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 97,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 0.66,
+        "latencyMs": 251
+      }
+    },
+    {
+      "id": "rtr-15",
+      "label": "implement",
+      "accept": [
+        "plan"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9617,
+        "latencyMs": 89
+      },
+      "jev": {
+        "choice": "implement",
+        "confidence": 0.93,
+        "latencyMs": 319
+      }
+    },
+    {
+      "id": "rtr-16",
+      "label": "chat",
+      "accept": [
+        "plan"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.6011,
+        "latencyMs": 74
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.96,
+        "latencyMs": 286
+      }
+    },
+    {
+      "id": "rtr-17",
+      "label": "plan",
+      "accept": [
+        "explain",
+        "chat"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9417,
+        "latencyMs": 66
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.58,
+        "latencyMs": 293
+      }
+    },
+    {
+      "id": "rtr-18",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9919,
+        "latencyMs": 63
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.9,
+        "latencyMs": 347
+      }
+    },
+    {
+      "id": "rtr-19",
+      "label": "explain",
+      "accept": [
+        "research"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9926,
+        "latencyMs": 57
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.95,
+        "latencyMs": 317
+      }
+    },
+    {
+      "id": "rtr-20",
+      "label": "plan",
+      "accept": [
+        "plan"
+      ],
+      "needle": {
+        "choice": "plan",
+        "confidence": 0.9578,
+        "latencyMs": 85
+      },
+      "jev": {
+        "choice": "plan",
+        "confidence": 0.99,
+        "latencyMs": 318
+      }
+    },
+    {
+      "id": "rtr-21",
+      "label": "explain",
+      "accept": [
+        "review"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.6179,
+        "latencyMs": 83
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.98,
+        "latencyMs": 376
+      }
+    },
+    {
+      "id": "rtr-22",
+      "label": "implement",
+      "accept": [
+        "implement"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9741,
+        "latencyMs": 105
+      },
+      "jev": {
+        "choice": "write",
+        "confidence": 0.45,
+        "latencyMs": 297
+      }
+    },
+    {
+      "id": "rtr-23",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9899,
+        "latencyMs": 64
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.42,
+        "latencyMs": 300
+      }
+    },
+    {
+      "id": "rtr-24",
+      "label": "implement",
+      "accept": [
+        "research"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 109,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "implement",
+        "confidence": 0.57,
+        "latencyMs": 297
+      }
+    },
+    {
+      "id": "rtr-25",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9853,
+        "latencyMs": 57
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.95,
+        "latencyMs": 304
+      }
+    },
+    {
+      "id": "rtr-26",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9863,
+        "latencyMs": 53
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 0.55,
+        "latencyMs": 303
+      }
+    },
+    {
+      "id": "rtr-27",
+      "label": "implement",
+      "accept": [
+        "implement"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9844,
+        "latencyMs": 58
+      },
+      "jev": {
+        "choice": "implement",
+        "confidence": 0.47,
+        "latencyMs": 266
+      }
+    },
+    {
+      "id": "rtr-28",
+      "label": "debug",
+      "accept": [
+        "explain"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 1,
+        "latencyMs": 65
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.6,
+        "latencyMs": 328
+      }
+    },
+    {
+      "id": "rtr-29",
+      "label": "implement",
+      "accept": [
+        "implement"
+      ],
+      "needle": {
+        "choice": "plan",
+        "confidence": 0.9899,
+        "latencyMs": 74
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 0.59,
+        "latencyMs": 336
+      }
+    },
+    {
+      "id": "rtr-30",
+      "label": "implement",
+      "accept": [
+        "debug"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9839,
+        "latencyMs": 64
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.53,
+        "latencyMs": 265
+      }
+    },
+    {
+      "id": "rtr-31",
+      "label": "implement",
+      "accept": [
+        "plan"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 92,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "implement",
+        "confidence": 0.87,
+        "latencyMs": 297
+      }
+    },
+    {
+      "id": "rtr-32",
+      "label": "debug",
+      "accept": [
+        "debug"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.6882,
+        "latencyMs": 72
+      },
+      "jev": {
+        "choice": "debug",
+        "confidence": 0.83,
+        "latencyMs": 338
+      }
+    },
+    {
+      "id": "rtr-33",
+      "label": "operate",
+      "accept": [
+        "debug"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.8903,
+        "latencyMs": 82
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.87,
+        "latencyMs": 287
+      }
+    },
+    {
+      "id": "rtr-34",
+      "label": "implement",
+      "accept": [
+        "implement"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.992,
+        "latencyMs": 58
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 0.65,
+        "latencyMs": 289
+      }
+    },
+    {
+      "id": "rtr-35",
+      "label": "research",
+      "accept": [
+        "review"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.97,
+        "latencyMs": 66
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.87,
+        "latencyMs": 293
+      }
+    },
+    {
+      "id": "rtr-36",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9351,
+        "latencyMs": 73
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.98,
+        "latencyMs": 349
+      }
+    },
+    {
+      "id": "rtr-37",
+      "label": "operate",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.8369,
+        "latencyMs": 100
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 1,
+        "latencyMs": 350
+      }
+    },
+    {
+      "id": "rtr-38",
+      "label": "chat",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9873,
+        "latencyMs": 72
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.93,
+        "latencyMs": 284
+      }
+    },
+    {
+      "id": "rtr-39",
+      "label": "debug",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.5405,
+        "latencyMs": 101
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.72,
+        "latencyMs": 259
+      }
+    },
+    {
+      "id": "rtr-40",
+      "label": "implement",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9906,
+        "latencyMs": 60
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.86,
+        "latencyMs": 351
+      }
+    },
+    {
+      "id": "rtr-41",
+      "label": "operate",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9898,
+        "latencyMs": 104
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.37,
+        "latencyMs": 266
+      }
+    },
+    {
+      "id": "rtr-42",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.8205,
+        "latencyMs": 55
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 1,
+        "latencyMs": 453
+      }
+    },
+    {
+      "id": "rtr-43",
+      "label": "debug",
+      "accept": [
+        "review"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9911,
+        "latencyMs": 64
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.37,
+        "latencyMs": 336
+      }
+    },
+    {
+      "id": "rtr-44",
+      "label": "implement",
+      "accept": [
+        "implement"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9781,
+        "latencyMs": 52
+      },
+      "jev": {
+        "choice": "implement",
+        "confidence": 0.71,
+        "latencyMs": 334
+      }
+    },
+    {
+      "id": "rtr-45",
+      "label": "operate",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.4901,
+        "latencyMs": 122
+      },
+      "jev": {
+        "choice": "implement",
+        "confidence": 0.35,
+        "latencyMs": 472
+      }
+    },
+    {
+      "id": "rtr-46",
+      "label": "debug",
+      "accept": [
+        "review"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9556,
+        "latencyMs": 105
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.44,
+        "latencyMs": 301
+      }
+    },
+    {
+      "id": "rtr-47",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9914,
+        "latencyMs": 47
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.97,
+        "latencyMs": 363
+      }
+    },
+    {
+      "id": "rtr-48",
+      "label": "debug",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 842,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "debug",
+        "confidence": 0.5,
+        "latencyMs": 313
+      }
+    },
+    {
+      "id": "rtr-49",
+      "label": "operate",
+      "accept": [
+        "debug"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9938,
+        "latencyMs": 71
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 0.57,
+        "latencyMs": 332
+      }
+    },
+    {
+      "id": "rtr-50",
+      "label": "review",
+      "accept": [
+        "review"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9523,
+        "latencyMs": 103
+      },
+      "jev": {
+        "choice": "review",
+        "confidence": 0.96,
+        "latencyMs": 303
+      }
+    },
+    {
+      "id": "rtr-51",
+      "label": "chat",
+      "accept": [
+        "explain"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9273,
+        "latencyMs": 120
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.7,
+        "latencyMs": 292
+      }
+    },
+    {
+      "id": "rtr-52",
+      "label": "plan",
+      "accept": [
+        "implement"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.6565,
+        "latencyMs": 92
+      },
+      "jev": {
+        "choice": "plan",
+        "confidence": 0.31,
+        "latencyMs": 707
+      }
+    },
+    {
+      "id": "rtr-53",
+      "label": "operate",
+      "accept": [
+        "operate"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 1,
+        "latencyMs": 47
+      },
+      "jev": {
+        "choice": "operate",
+        "confidence": 0.86,
+        "latencyMs": 310
+      }
+    },
+    {
+      "id": "rtr-54",
+      "label": "debug",
+      "accept": [
+        "explain"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.9784,
+        "latencyMs": 73
+      },
+      "jev": {
+        "choice": "debug",
+        "confidence": 0.55,
+        "latencyMs": 285
+      }
+    },
+    {
+      "id": "rtr-55",
+      "label": "chat",
+      "accept": [
+        "explain"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.975,
+        "latencyMs": 72
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.66,
+        "latencyMs": 442
+      }
+    },
+    {
+      "id": "rtr-56",
+      "label": "explain",
+      "accept": [
+        "research"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9901,
+        "latencyMs": 60
+      },
+      "jev": {
+        "choice": "explain",
+        "confidence": 0.62,
+        "latencyMs": 322
+      }
+    },
+    {
+      "id": "rtr-57",
+      "label": "plan",
+      "accept": [
+        "research"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9898,
+        "latencyMs": 95
+      },
+      "jev": {
+        "choice": "review",
+        "confidence": 0.65,
+        "latencyMs": 246
+      }
+    },
+    {
+      "id": "rtr-58",
+      "label": "debug",
+      "accept": [
+        "debug"
+      ],
+      "needle": {
+        "choice": "review",
+        "confidence": 0.9935,
+        "latencyMs": 73
+      },
+      "jev": {
+        "choice": "debug",
+        "confidence": 0.97,
+        "latencyMs": 329
+      }
+    },
+    {
+      "id": "rtr-59",
+      "label": "chat",
+      "accept": [
+        "chat"
+      ],
+      "needle": {
+        "choice": "refactor",
+        "confidence": 0.972,
+        "latencyMs": 67
+      },
+      "jev": {
+        "choice": "chat",
+        "confidence": 0.88,
+        "latencyMs": 303
+      }
+    }
+  ]
+}

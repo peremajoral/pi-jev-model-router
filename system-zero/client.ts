@@ -59,6 +59,8 @@ export class SystemZero<TJev> {
 
   async complete(options: CompleteOptions): Promise<SystemZeroResult<TJev>> {
     const { input, toolset, threshold } = options;
+    const acceptSuppressed = options.acceptSuppressed === true;
+    const expectedCalls = options.expectedCalls ?? 1;
 
     // 1. The hard limit: never sent, never cut. Half a command gives a confident wrong call.
     if (input.length > MAX_INPUT_CHARS) {
@@ -85,9 +87,20 @@ export class SystemZero<TJev> {
       return await this.escalate(input, toolset, "unavailable", null, null);
     }
     const envelope = outcome.envelope;
-    const calls = envelope.function_calls ?? [];
+    // The engine withholds a call whose arguments are not literally grounded in
+    // the input; for a classification enum that is the normal case, so the
+    // withheld call IS the answer when the consumer asked for it. Both empty is
+    // the real refusal.
+    const grounded = envelope.function_calls ?? [];
+    const withheld = acceptSuppressed ? (envelope.suppressed_calls ?? []) : [];
+    const calls = grounded.length > 0 ? grounded : withheld;
     if (calls.length === 0) {
       return await this.escalate(input, toolset, "refusal", null, envelope);
+    }
+    // One class expected and needle proposes several: that is ambiguity, not an
+    // answer. Picking the first would be guessing with a confidence score.
+    if (expectedCalls === 1 && calls.length > 1) {
+      return await this.escalate(input, toolset, "ambiguous", envelope.confidence ?? null, envelope);
     }
 
     // 4. The calibrated gate.

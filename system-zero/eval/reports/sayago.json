@@ -1,0 +1,860 @@
+{
+  "report": {
+    "bank": "sayago",
+    "cases": 42,
+    "labels": [
+      "needs_review",
+      "route_to_gestoria",
+      "route_to_payroll"
+    ],
+    "needleAvailable": 35,
+    "jevAvailable": 42,
+    "agreement": 0.22857142857142856,
+    "confusionNeedle": {
+      "route_to_gestoria": {
+        "request_information": 16,
+        "route_to_gestoria": 3
+      },
+      "route_to_payroll": {
+        "request_information": 7
+      },
+      "needs_review": {
+        "request_information": 8,
+        "route_to_gestoria": 1
+      }
+    },
+    "confusionJev": {
+      "route_to_gestoria": {
+        "route_to_gestoria": 9,
+        "request_information": 6,
+        "route_to_payroll": 6,
+        "needs_review": 1
+      },
+      "route_to_payroll": {
+        "needs_review": 1,
+        "route_to_payroll": 6
+      },
+      "needs_review": {
+        "needs_review": 6,
+        "route_to_gestoria": 1,
+        "request_information": 4,
+        "route_to_payroll": 2
+      }
+    },
+    "accuracyNeedle": 0.3142857142857143,
+    "accuracyJev": 0.47619047619047616,
+    "thresholds": [
+      {
+        "threshold": 0.5,
+        "covered": 35,
+        "coverage": 0.8333333333333334,
+        "answeredCorrect": 11,
+        "answeredWrong": 24,
+        "accuracyAnswered": 0.3142857142857143,
+        "highConfFalse": 24,
+        "systemCorrect": 13,
+        "systemAccuracy": 0.30952380952380953,
+        "escalated": 7
+      },
+      {
+        "threshold": 0.6,
+        "covered": 33,
+        "coverage": 0.7857142857142857,
+        "answeredCorrect": 11,
+        "answeredWrong": 22,
+        "accuracyAnswered": 0.3333333333333333,
+        "highConfFalse": 22,
+        "systemCorrect": 15,
+        "systemAccuracy": 0.35714285714285715,
+        "escalated": 9
+      },
+      {
+        "threshold": 0.7,
+        "covered": 33,
+        "coverage": 0.7857142857142857,
+        "answeredCorrect": 11,
+        "answeredWrong": 22,
+        "accuracyAnswered": 0.3333333333333333,
+        "highConfFalse": 22,
+        "systemCorrect": 15,
+        "systemAccuracy": 0.35714285714285715,
+        "escalated": 9
+      },
+      {
+        "threshold": 0.8,
+        "covered": 32,
+        "coverage": 0.7619047619047619,
+        "answeredCorrect": 11,
+        "answeredWrong": 21,
+        "accuracyAnswered": 0.34375,
+        "highConfFalse": 21,
+        "systemCorrect": 16,
+        "systemAccuracy": 0.38095238095238093,
+        "escalated": 10
+      },
+      {
+        "threshold": 0.85,
+        "covered": 31,
+        "coverage": 0.7380952380952381,
+        "answeredCorrect": 11,
+        "answeredWrong": 20,
+        "accuracyAnswered": 0.3548387096774194,
+        "highConfFalse": 20,
+        "systemCorrect": 17,
+        "systemAccuracy": 0.40476190476190477,
+        "escalated": 11
+      },
+      {
+        "threshold": 0.9,
+        "covered": 30,
+        "coverage": 0.7142857142857143,
+        "answeredCorrect": 11,
+        "answeredWrong": 19,
+        "accuracyAnswered": 0.36666666666666664,
+        "highConfFalse": 19,
+        "systemCorrect": 17,
+        "systemAccuracy": 0.40476190476190477,
+        "escalated": 12
+      },
+      {
+        "threshold": 0.95,
+        "covered": 28,
+        "coverage": 0.6666666666666666,
+        "answeredCorrect": 10,
+        "answeredWrong": 18,
+        "accuracyAnswered": 0.35714285714285715,
+        "highConfFalse": 18,
+        "systemCorrect": 16,
+        "systemAccuracy": 0.38095238095238093,
+        "escalated": 14
+      }
+    ],
+    "latency": {
+      "needleMs": 71.91428571428571,
+      "jevMs": 323.2857142857143
+    }
+  },
+  "outcomes": [
+    {
+      "id": "say-01",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 290,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.21,
+        "latencyMs": 444
+      }
+    },
+    {
+      "id": "say-02",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9664,
+        "latencyMs": 71
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.48,
+        "latencyMs": 442
+      }
+    },
+    {
+      "id": "say-03",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 81
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.46,
+        "latencyMs": 303
+      }
+    },
+    {
+      "id": "say-04",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 88,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.2,
+        "latencyMs": 388
+      }
+    },
+    {
+      "id": "say-05",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.5766,
+        "latencyMs": 108
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.42,
+        "latencyMs": 299
+      }
+    },
+    {
+      "id": "say-06",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9845,
+        "latencyMs": 73
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.22,
+        "latencyMs": 324
+      }
+    },
+    {
+      "id": "say-07",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.7705,
+        "latencyMs": 91
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.61,
+        "latencyMs": 277
+      }
+    },
+    {
+      "id": "say-08",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.987,
+        "latencyMs": 75
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.55,
+        "latencyMs": 295
+      }
+    },
+    {
+      "id": "say-09",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9887,
+        "latencyMs": 82
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.08,
+        "latencyMs": 306
+      }
+    },
+    {
+      "id": "say-10",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.9423,
+        "latencyMs": 110
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.07,
+        "latencyMs": 323
+      }
+    },
+    {
+      "id": "say-11",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "route_to_gestoria",
+        "confidence": 1,
+        "latencyMs": 68
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.3,
+        "latencyMs": 729
+      }
+    },
+    {
+      "id": "say-12",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.9838,
+        "latencyMs": 77
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.27,
+        "latencyMs": 333
+      }
+    },
+    {
+      "id": "say-13",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9906,
+        "latencyMs": 67
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.32,
+        "latencyMs": 342
+      }
+    },
+    {
+      "id": "say-14",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 70
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.22,
+        "latencyMs": 340
+      }
+    },
+    {
+      "id": "say-15",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9402,
+        "latencyMs": 118
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.26,
+        "latencyMs": 291
+      }
+    },
+    {
+      "id": "say-16",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9939,
+        "latencyMs": 71
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.38,
+        "latencyMs": 351
+      }
+    },
+    {
+      "id": "say-17",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 64
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.27,
+        "latencyMs": 298
+      }
+    },
+    {
+      "id": "say-18",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 71
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.32,
+        "latencyMs": 329
+      }
+    },
+    {
+      "id": "say-19",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 85,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.28,
+        "latencyMs": 266
+      }
+    },
+    {
+      "id": "say-20",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 72
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.17,
+        "latencyMs": 297
+      }
+    },
+    {
+      "id": "say-21",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 74
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.24,
+        "latencyMs": 274
+      }
+    },
+    {
+      "id": "say-22",
+      "label": "route_to_payroll",
+      "accept": [
+        "route_to_payroll"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9844,
+        "latencyMs": 63
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.42,
+        "latencyMs": 309
+      }
+    },
+    {
+      "id": "say-23",
+      "label": "route_to_payroll",
+      "accept": [
+        "route_to_payroll"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9899,
+        "latencyMs": 69
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.88,
+        "latencyMs": 301
+      }
+    },
+    {
+      "id": "say-24",
+      "label": "route_to_payroll",
+      "accept": [
+        "route_to_payroll"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9934,
+        "latencyMs": 54
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.94,
+        "latencyMs": 306
+      }
+    },
+    {
+      "id": "say-25",
+      "label": "route_to_payroll",
+      "accept": [
+        "route_to_payroll"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.5607,
+        "latencyMs": 83
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.64,
+        "latencyMs": 301
+      }
+    },
+    {
+      "id": "say-26",
+      "label": "route_to_payroll",
+      "accept": [
+        "route_to_payroll"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9703,
+        "latencyMs": 57
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.96,
+        "latencyMs": 427
+      }
+    },
+    {
+      "id": "say-27",
+      "label": "route_to_payroll",
+      "accept": [
+        "route_to_payroll"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.814,
+        "latencyMs": 63
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.77,
+        "latencyMs": 324
+      }
+    },
+    {
+      "id": "say-28",
+      "label": "route_to_payroll",
+      "accept": [
+        "route_to_payroll"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 70
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.29,
+        "latencyMs": 290
+      }
+    },
+    {
+      "id": "say-29",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 51
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.85,
+        "latencyMs": 324
+      }
+    },
+    {
+      "id": "say-30",
+      "label": "needs_review",
+      "accept": [
+        "needs_review"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 77,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.21,
+        "latencyMs": 315
+      }
+    },
+    {
+      "id": "say-31",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "route_to_gestoria",
+        "confidence": 0.8952,
+        "latencyMs": 64
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.49,
+        "latencyMs": 293
+      }
+    },
+    {
+      "id": "say-32",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 46
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.81,
+        "latencyMs": 245
+      }
+    },
+    {
+      "id": "say-33",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 64
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.64,
+        "latencyMs": 308
+      }
+    },
+    {
+      "id": "say-34",
+      "label": "needs_review",
+      "accept": [
+        "needs_review"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 69,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.64,
+        "latencyMs": 245
+      }
+    },
+    {
+      "id": "say-35",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 59
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.77,
+        "latencyMs": 294
+      }
+    },
+    {
+      "id": "say-36",
+      "label": "route_to_gestoria",
+      "accept": [
+        "route_to_gestoria"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 70
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.91,
+        "latencyMs": 260
+      }
+    },
+    {
+      "id": "say-37",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 0.9821,
+        "latencyMs": 67
+      },
+      "jev": {
+        "choice": "needs_review",
+        "confidence": 0.36,
+        "latencyMs": 320
+      }
+    },
+    {
+      "id": "say-38",
+      "label": "needs_review",
+      "accept": [
+        "needs_review"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 66,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.43,
+        "latencyMs": 293
+      }
+    },
+    {
+      "id": "say-39",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 75
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.45,
+        "latencyMs": 286
+      }
+    },
+    {
+      "id": "say-40",
+      "label": "needs_review",
+      "accept": [
+        "needs_review"
+      ],
+      "needle": {
+        "choice": null,
+        "confidence": null,
+        "latencyMs": 88,
+        "error": "ambiguous"
+      },
+      "jev": {
+        "choice": "route_to_payroll",
+        "confidence": 0.19,
+        "latencyMs": 320
+      }
+    },
+    {
+      "id": "say-41",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 59
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.55,
+        "latencyMs": 298
+      }
+    },
+    {
+      "id": "say-42",
+      "label": "needs_review",
+      "accept": [
+        "request_information"
+      ],
+      "needle": {
+        "choice": "request_information",
+        "confidence": 1,
+        "latencyMs": 60
+      },
+      "jev": {
+        "choice": "request_information",
+        "confidence": 0.89,
+        "latencyMs": 268
+      }
+    }
+  ]
+}

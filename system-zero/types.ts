@@ -85,7 +85,8 @@ export interface HttpTransportOptions {
 /** Why the decision went where it went. Auditability over silence. */
 export type EscalationReason =
   | "threshold" // needle answered but below the calibrated umbral
-  | "refusal" // needle's empty function_calls: it says the input is not its job
+  | "refusal" // needle produced no call at all: it says the input is not its job
+  | "ambiguous" // needle proposed more than one call for a task that expects one class
   | "oversize" // input over the 2000-char hard limit; never sent to needle
   | "empty_input"
   | "invalid_toolset"
@@ -116,4 +117,16 @@ export interface CompleteOptions {
   toolset: Toolset;
   /** Calibrated per consumer by the EVAL (jev-4y5.13). NOT Jev's threshold. */
   threshold: number;
+  /**
+   * Classification toolsets MUST set this: needle puts a call whose enum value
+   * is not literally grounded in the input into `suppressed_calls` (its
+   * grounding gate), with `function_calls` empty. The docs say exactly that:
+   * read the withheld call and let the confidence decide. Act-on-tools keep the
+   * default (false) — a suppressed call there is a confirmation prompt, not an
+   * action.
+   */
+  acceptSuppressed?: boolean;
+  /** Tasks that expect exactly one class: more than one proposed call is
+   *  ambiguity and escalates instead of picking one. Default 1. */
+  expectedCalls?: number;
 }
