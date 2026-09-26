@@ -142,6 +142,50 @@ Enforcer**. Dan salida con forma garantizada sobre cualquier modelo. Nuestro EVA
 5. **Needle se queda donde está** (system-zero implementado y pineado, modos A/B/C): disponible si
    aparece un caso con banco que lo justifique, sin tocar producción mientras no lo haga.
 
+## Parte 4 — Deep dive: CodeRabbit, PR-Agent, Apple Foundation Models (docs oficiales)
+
+### CodeRabbit
+- **Docs oficiales**: "AI code reviews on pull requests, IDE, and CLI"; "Review, prioritize, understand, and secure **agent-generated** changes".
+- **Precio (página oficial de pricing)**: Essentials **$30/dev/mes** ($24 si es anual, −20%). Incluye: agentic AI reviews en PRs y CLI, triage, Change Stack, Continuous Security Monitoring, 1-click fixes.
+- **Encaje con Jev**: NO es un primitivo embebible — es un revisor de PR con UI propietaria. No expone veredicto tipado ni fail-closed. Com-pite por el **presupuesto** de "revisar el cambio", no por la arquitectura. Señal: su copy ya apunta a cambios generados por agentes.
+
+### PR-Agent (`The-PR-Agent/pr-agent`, 13.153★)
+- **Open source y self-hosted**: CLI, GitHub Actions, Docker, webhooks; GitHub, GitLab, BitBucket, Azure DevOps, Gitea.
+- **Model-agnostic vía LiteLLM, incluido Ollama** → puedes poner un modelo **local o gratis** como motor de review. Copy oficial: "Full control over your data and infrastructure", "No vendor lock-in".
+- **Encaje**: es el único de los tres que se puede integrar de verdad bajo tu stack sin licencia de pago. Candidato directo a cubrir los workflows `review` (1,76M tokens) y `check` (1,30M) de stanley **sin llamar a Jev**, y a comparar contra agent-jev en el caso "juzga mi diff". _Pendiente: verificar la licencia exacta antes de uso comercial._
+
+### Apple Foundation Models
+- **Doc oficial (fetchada)**: el framework sirve para "language understanding, **structured output**, and **tool calling**"; las guías oficiales dicen: tool calling = "Build tools that enable the model to perform tasks that are specific to your use case"; guided generation = "Create robust apps by describing output you want programmatically"; y la guía de prompting habla de "an **on-device** large language model". El artículo de Apple describe el modelo **~3B on-device** (+ servidor con Private Cloud Compute).
+- **Gratis, local, privado y tipado** — el único "juez gratis tipado on-device" con soporte oficial. Requiere Swift/macOS 26: para tu stack Node/Python sería un sidecar Swift o un CLI puente.
+- **Encaje**: hipótesis, no hecho. Es el siguiente candidato a medir contra el banco del EVAL (needle falló; Apple FM es 25-100× más grande y con guided generation oficial).
+
+## Parte 5 — Cómo bajar el consumo de Jev con gratis: el mapa medido
+
+**Dónde está el dinero (medido hoy, `informe-coste.mjs`):**
+
+| workflow stanley | llamadas | entrada | media | % del total |
+|---|---|---|---|---|
+| **find** | **6.066** | **57,11M** | **9k** | **94,8%** |
+| review | 383 | 1,76M | 5k | 2,9% |
+| check | 365 | 1,30M | 4k | 2,2% |
+| test_gaps + compatibility | 17 | 75k | — | 0,1% |
+
+El router son 478k tokens. **El campo de batalla es `find`**: 6.066 llamadas × 9k de estado. Cualquier capa gratis que no ataque `find` está optimizando el 5%.
+
+**Palancas, por orden de coste/beneficio:**
+
+1. **No llamar a Jev cuando el determinismo basta (GRATIS, sin modelos).** Si la query de `find` nombra un identificador o ruta que aparece **literal** en el repo, ripgrep/AST lo resuelve sin juez. Esta es la mitad "prefiltro duro" del bead 4y5.8 que se cerró con needle y **nunca se implementó sola** — el fallo de needle no dice nada contra el prefiltro determinista. Requiere medir antes: ¿qué % de las 6.066 llamadas son resolubles por coincidencia literal? Hay banco/logs para medirlo.
+2. **Caché de veredictos (HECHO)**: re-juicio idéntico = 0 tokens (medido 42.653 → 0).
+3. **Caps mecánicos (HECHO)**: lockfiles/espacios/renombres sin juez.
+4. **Clasificador fino como GATE, no como juez**: "¿esta query necesita Jev?" entrenado sobre los logs. Sub-ms, gratis, probabilidad real. Regla dura: el gate solo puede **apagar** el juez cuando el camino determinista ya resolvió; jamás aprobar por su cuenta.
+5. **Modelo local tipado como capa-0** (Apple FM 3B con guided generation, o Qwen3-0.6B/Granite+gramática): responder lo fácil y escalar el resto. Hipótesis **ya falsificada** para needle (0–31% vs 35–100% de Jev): exigir banco antes de producción, otra vez.
+6. **PR-Agent + modelo local en `review`/`check`**: cubre 3,06M tokens (5%) sin Jev y sin licencia (verificar licencia). Pequeño, pero real y sin riesgo de calidad sobre el juez.
+7. **CodeRabbit**: no integrable como primitivo; sustituye el workflow entero a $24–30/dev/mes. Compite por presupuesto.
+
+**Respuesta honesta a "¿es posible que no encontremos nada?"**
+- Para **juzgar con calidad**: hoy no hay sustituto gratis **medido** (needle perdió en los 4 consumidores; Apple FM/PR-Agent+HQ/gramática aún no se han medido). No es que no exista: es que no se sabe todavía.
+- Para **no gastar Jev**: sí hay una palanca grande y gratis — el **94,8% del consumo es `find`**, y una parte de ese trabajo es coincidencia mecánica que no necesita juez. Buscar ahí, no en sustituir al juez.
+
 ## Fuentes fetchadas (2026-09-26)
 - Autoevals: https://raw.githubusercontent.com/braintrustdata/autoevals/main/README.md
 - DeepEval: https://raw.githubusercontent.com/confident-ai/deepeval/main/README.md
@@ -158,3 +202,7 @@ Enforcer**. Dan salida con forma garantizada sobre cualquier modelo. Nuestro EVA
 - Ollama (tools): https://raw.githubusercontent.com/ollama/ollama/main/docs/api.md · llama.cpp (GBNF): https://raw.githubusercontent.com/ggml-org/llama.cpp/master/README.md
 - Cloudflare Workers AI function calling: https://developers.cloudflare.com/workers-ai/features/function-calling/
 - Evidencia propia: `system-zero/eval/REPORT.md` (needle vs Jev por consumidor)
+- **CodeRabbit (docs y precio)**: https://docs.coderabbit.ai/ · https://www.coderabbit.ai/pricing
+- **PR-Agent**: https://raw.githubusercontent.com/The-PR-Agent/pr-agent/main/README.md
+- **Apple Foundation Models (framework, tool calling, structured output)**: https://developer.apple.com/tutorials/data/documentation/foundationmodels.json · .../expanding-generation-with-tool-calling.json · .../generating-swift-data-structures-with-guided-generation.json
+- **Consumo propio por workflow**: `node scripts/informe-coste.mjs` (repo jev)
