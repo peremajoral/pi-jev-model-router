@@ -426,8 +426,8 @@ entirely when a model's pricing is unknown, so it never blocks on guesses. Set
 | `mode` | `"auto"` | `auto` \| `confirm` \| `notify` |
 | `apiKeyEnv` / `apiKey` | `TYPESAFE_API_KEY` | TypeSafe credentials. **Not needed for a local endpoint** (e.g. Ollaya on `127.0.0.1`) — a placeholder key is sent instead |
 | `endpoint` | `http://127.0.0.1:11435/v1/systemone` | Judge endpoint. Defaults to the local judge (Ollaya serves the same systemone contract TypeSafe does); point it at `https://api.typesafe.ai/v1/systemone` to use the cloud judge |
-| `jevModel` | `"winnow:e4b"` | Primary judge model |
-| `judgeFallbacks` | `["laya:latest", "nli:latest"]` | Judge cascade: consulted in order when the primary fails (server down, timeout, billing errors like TypeSafe 402) or answers below `escalateBelowConfidence`; the most confident answer wins. When the trained judges disagree and none reaches the floor, the zero-shot judge's vote is decisive: whichever side it takes wins. All models live on the same `endpoint`. Empty = primary only |
+| `jevModel` | `"winnow:e4b-t08"` | Primary judge model. Falls back to `winnow:e4b` first (see `judgeFallbacks`) when t08 is unavailable |
+| `judgeFallbacks` | `["winnow:e4b", "laya:latest", "nli:latest"]` | Judge cascade: consulted in order when the primary fails (server down, timeout, broken model build, billing errors like TypeSafe 402) or answers below `escalateBelowConfidence`; the most confident answer wins. When the trained judges disagree and none reaches the floor, the zero-shot judge's vote is decisive: whichever side it takes wins. All models live on the same `endpoint`. Empty = primary only |
 | `escalateBelowConfidence` | `0.5` | kind-confidence below which the next fallback is also consulted ("if necessary"). `0` disables escalation |
 | `sentimentThreshold` | `0.65` | Frustration/urgency probability at or above this elevates the tier (the user cannot afford another failed turn) |
 | `sentimentBoost` | `0.6` | Demand added by a high-sentiment prompt. `0` disables. The boost never buys premium by itself: premium requires base demand ≥ 2.5 |

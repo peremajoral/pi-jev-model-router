@@ -2,7 +2,7 @@
 
 A pi extension that routes every prompt to a model tier using typed
 **systemone judgments**. By default the judge is **local**: Ollaya serving the
-same systemone contract TypeSafe does (`winnow:e4b`, cascading to
+same systemone contract TypeSafe does (`winnow:e4b-t08` → `winnow:e4b`, cascading to
 `laya:latest` and `nli:latest` only when needed). You type normally; before the
 turn starts, the judge reads the request and answers four narrow questions,
 code composes those into a tier, applies your budget policy, and pi switches to

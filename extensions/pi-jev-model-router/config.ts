@@ -156,8 +156,8 @@ export const DEFAULT_CONFIG: JevRouterConfig = {
   // Local judge (Ollaya) serves the same systemone contract TypeSafe does;
   // no API key is needed for a local endpoint (see local.ts).
   endpoint: "http://127.0.0.1:11435/v1/systemone",
-  jevModel: "winnow:e4b",
-  judgeFallbacks: ["laya:latest", "nli:latest"],
+  jevModel: "winnow:e4b-t08",
+  judgeFallbacks: ["winnow:e4b", "laya:latest", "nli:latest"],
   escalateBelowConfidence: 0.5,
   timeoutMs: 35000,
   minPromptChars: 12,
