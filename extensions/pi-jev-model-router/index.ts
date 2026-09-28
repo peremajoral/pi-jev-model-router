@@ -422,6 +422,7 @@ function formatAnalysis(analysis: RouteAnalysis): string {
     `complexity: ${analysis.complexity.toFixed(2)}/3 (conf ${analysis.complexityConfidence.toFixed(2)})`,
     `capability deserved: ${analysis.budgetIntensity.toFixed(2)}/3 (conf ${analysis.budgetIntensityConfidence.toFixed(2)})`,
     `deep reasoning: ${(analysis.deepReasoning * 100).toFixed(0)}%`,
+    `sentiment: ${(analysis.sentiment * 100).toFixed(0)}% frustrated/urgent`,
     `jev latency: ${analysis.latencyMs}ms`,
   ].join("\n");
 }

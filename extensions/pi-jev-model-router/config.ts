@@ -13,8 +13,10 @@ import { CONFIG_DIR_NAME } from "@earendil-works/pi-coding-agent";
  *   4. env: TYPESAFE_API_KEY / JEV_ROUTER_MODE / JEV_ROUTER_OFF
  */
 
-export type Tier = "quick" | "standard" | "high" | "premium";
-export const TIERS: readonly Tier[] = ["quick", "standard", "high", "premium"] as const;
+import { TIERS, type Tier } from "./tiers.ts";
+
+export type { Tier } from "./tiers.ts";
+export { TIERS } from "./tiers.ts";
 
 export type Mode = "auto" | "confirm" | "notify";
 export type ThinkingLevel = "off" | "minimal" | "low" | "medium" | "high" | "xhigh" | "max";
@@ -120,6 +122,10 @@ export interface JevRouterConfig {
   confidenceThreshold: number;
   /** Don't switch models when the current model already sits on the chosen tier. */
   stickiness: boolean;
+  /** Sentiment (frustration/urgency) probability at or above this elevates the tier. */
+  sentimentThreshold: number;
+  /** How much demand a high-sentiment prompt adds (0 disables). */
+  sentimentBoost: number;
   stateFile: string;
   routes: Record<Tier, RouteChain>;
   /**
@@ -158,6 +164,8 @@ export const DEFAULT_CONFIG: JevRouterConfig = {
   historyTurns: 4,
   confidenceThreshold: 0.34,
   stickiness: true,
+  sentimentThreshold: 0.65,
+  sentimentBoost: 0.6,
   stateFile: join(homedir(), CONFIG_DIR_NAME, "agent", "pi-jev-model-router-state.json"),
   routes: {
     quick: [

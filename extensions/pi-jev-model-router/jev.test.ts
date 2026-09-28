@@ -11,15 +11,21 @@ import { classifyRequest, JevError } from "./jev.ts";
 import { apiKeyFor, hasApiKey, isLocalEndpoint, LOCAL_JUDGE_KEY } from "./local.ts";
 import type { JevRouterConfig } from "./config.ts";
 
-/** A valid systemone answer payload for the router's four questions. */
-function answerPayload(model: string, kind: string, kindConfidence: number): unknown {
+/** A valid systemone answer payload for the router's five questions. */
+function answerPayload(
+  model: string,
+  kind: string,
+  kindConfidence: number,
+  extra: { sentiment?: number; probabilities?: Record<string, number> } = {},
+): unknown {
   return {
     model,
     answers: {
-      task_kind: { type: "choice", choice: kind, confidence: kindConfidence, probabilities: { [kind]: kindConfidence } },
+      task_kind: { type: "choice", choice: kind, confidence: kindConfidence, probabilities: extra.probabilities ?? { [kind]: kindConfidence } },
       complexity: { type: "score", score: 1.2, confidence: 0.5, probabilities: {} },
       capability_deserved: { type: "score", score: 0.9, confidence: 0.4, probabilities: {} },
       needs_deep_reasoning: { type: "noul", noul: 0.2 },
+      sentiment_escalation: { type: "noul", noul: extra.sentiment ?? 0.1 },
     },
     usage: { input_tokens: 100, output_tokens: 0 },
   };
@@ -115,11 +121,11 @@ test("primary below the confidence floor: laya wins with higher confidence", asy
   }
 });
 
-test("fallback worse than primary: primary answer is kept", async () => {
+test("fallback worse than primary, no disagreement to adjudicate: primary kept", async () => {
   const mock = mockFetch([
     () => new Response(JSON.stringify(answerPayload("winnow:e4b", "implement", 0.3)), { status: 200 }),
-    () => new Response(JSON.stringify(answerPayload("laya:latest", "chat", 0.25)), { status: 200 }),
-    () => new Response(JSON.stringify(answerPayload("nli:latest", "chat", 0.22)), { status: 200 }),
+    () => new Response(JSON.stringify(answerPayload("laya:latest", "review", 0.25)), { status: 200 }),
+    () => new Response(JSON.stringify(answerPayload("nli:latest", "explain", 0.22)), { status: 200 }),
   ]);
   try {
     const analysis = await classifyRequest(INPUT, config(), LOCAL_JUDGE_KEY);
@@ -212,4 +218,95 @@ test("local endpoint needs no API key; remote still does", () => {
 test("an explicit apiKey wins over the local placeholder", () => {
   const local = config({ apiKey: "sk-explicit" });
   assert.equal(apiKeyFor(local), "sk-explicit");
+});
+
+test("sentiment_escalation answer is parsed; missing answer means 0", async () => {
+  const mock = mockFetch([
+    () =>
+      new Response(
+        JSON.stringify({
+          model: "winnow:e4b",
+          answers: {
+            task_kind: { type: "choice", choice: "debug", confidence: 0.9, probabilities: {} },
+            complexity: { type: "score", score: 1.2, confidence: 0.5, probabilities: {} },
+            capability_deserved: { type: "score", score: 0.9, confidence: 0.4, probabilities: {} },
+            needs_deep_reasoning: { type: "noul", noul: 0.2 },
+            sentiment_escalation: { type: "noul", noul: 0.82 },
+          },
+          usage: { input_tokens: 100, output_tokens: 0 },
+        }),
+        { status: 200 },
+      ),
+  ]);
+  try {
+    const analysis = await classifyRequest(INPUT, config(), LOCAL_JUDGE_KEY);
+    assert.equal(analysis.sentiment, 0.82);
+  } finally {
+    mock.restore();
+  }
+
+  // A payload without the sentiment answer (older judge) must parse with 0.
+  const orig = globalThis.fetch;
+  const stripped = answerPayload("winnow:e4b", "debug", 0.9) as { answers: Record<string, unknown> };
+  delete stripped.answers.sentiment_escalation;
+  globalThis.fetch = (async () => new Response(JSON.stringify(stripped), { status: 200 })) as typeof fetch;
+  try {
+    const analysis = await classifyRequest(INPUT, config(), LOCAL_JUDGE_KEY);
+    assert.equal(analysis.sentiment, 0);
+  } finally {
+    globalThis.fetch = orig;
+  }
+});
+
+test("NLI is decisive: trained judges disagree below the floor, NLI sides with one", async () => {
+  const mock = mockFetch([
+    () => new Response(JSON.stringify(answerPayload("winnow:e4b", "implement", 0.3)), { status: 200 }),
+    () => new Response(JSON.stringify(answerPayload("laya:latest", "debug", 0.4)), { status: 200 }),
+    () => new Response(JSON.stringify(answerPayload("nli:latest", "implement", 0.29)), { status: 200 }),
+  ]);
+  try {
+    const analysis = await classifyRequest(INPUT, config(), LOCAL_JUDGE_KEY);
+    assert.equal(analysis.kind, "implement");
+    assert.equal(analysis.judgeModel, "winnow:e4b");
+    assert.equal(analysis.escalated, false);
+    assert.match(analysis.escalationNote ?? "", /adjudicated → implement/);
+    assert.equal(mock.calls.length, 3);
+  } finally {
+    mock.restore();
+  }
+});
+
+test("NLI matching neither side: highest confidence wins", async () => {
+  const mock = mockFetch([
+    () => new Response(JSON.stringify(answerPayload("winnow:e4b", "implement", 0.3)), { status: 200 }),
+    () => new Response(JSON.stringify(answerPayload("laya:latest", "debug", 0.4)), { status: 200 }),
+    () => new Response(JSON.stringify(answerPayload("nli:latest", "explain", 0.35)), { status: 200 }),
+  ]);
+  try {
+    const analysis = await classifyRequest(INPUT, config(), LOCAL_JUDGE_KEY);
+    assert.equal(analysis.kind, "debug");
+    assert.equal(analysis.judgeModel, "laya:latest");
+    assert.equal(analysis.escalated, true);
+    assert.match(analysis.escalationNote ?? "", /below floor/);
+  } finally {
+    mock.restore();
+  }
+});
+
+test("NLI consulted once both earlier judges failed: its answer is the only one", async () => {
+  const mock = mockFetch([
+    () => new Response("down", { status: 500 }),
+    () => new Response("down", { status: 500 }),
+    () => new Response(JSON.stringify(answerPayload("nli:latest", "debug", 0.22)), { status: 200 }),
+  ]);
+  try {
+    const analysis = await classifyRequest(INPUT, config(), LOCAL_JUDGE_KEY);
+    assert.equal(analysis.kind, "debug");
+    assert.equal(analysis.judgeModel, "nli:latest");
+    assert.equal(analysis.escalated, true);
+    // 0.22 < floor 0.5: the exhausted branch, but NLI is the only answer.
+    assert.match(analysis.escalationNote ?? "", /below floor/);
+  } finally {
+    mock.restore();
+  }
 });

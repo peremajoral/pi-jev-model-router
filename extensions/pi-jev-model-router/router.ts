@@ -1,7 +1,7 @@
+import { TIERS } from "./tiers.ts";
 import type { JevRouterConfig, RouteChain, RouteTarget, Tier } from "./config";
-import { TIERS } from "./config";
 import type { SpendSnapshot } from "./budget";
-import { formatUsd } from "./budget";
+import { formatUsd } from "./budget.ts";
 import type { RouteAnalysis } from "./jev";
 
 export interface AvailableModel {
@@ -179,9 +179,19 @@ export function decide(
   const { spend } = options;
 
   let demand = 0.55 * analysis.complexity + 0.45 * analysis.budgetIntensity;
+  // Demanda base, antes de cualquier empujón (reasoning/sentiment): el premium se gana
+  // con dificultad real, no con bonus. Medido en 457 decisiones reales (research-11,
+  // sondas/olla-bench): -7.8% de coste de ejecución, 0 degradaciones de plan/review.
+  const demandBase = demand;
   const reasoning = config.reasoning ?? { threshold: 0.65, bonus: 0.75, floor: 0.2, penalty: 0.25 };
   if (analysis.deepReasoning >= reasoning.threshold) demand += reasoning.bonus;
   else if (analysis.deepReasoning <= reasoning.floor) demand -= reasoning.penalty;
+  // Sentiment guard: a frustrated/urgent user gets a stronger model — they cannot
+  // afford another failed turn. Calm tone never lowers the tier.
+  if (config.sentimentBoost > 0 && analysis.sentiment >= config.sentimentThreshold) {
+    demand += config.sentimentBoost;
+    notes.push(`sentiment ${(analysis.sentiment * 100).toFixed(0)}% ≥ ${config.sentimentThreshold} → +${config.sentimentBoost}`);
+  }
   demand = clamp(demand, 0, 3);
 
   const kindFloor = tierIndex(config.kindMinimumTier[analysis.kind] ?? "quick");
@@ -194,14 +204,31 @@ export function decide(
   let index = desiredIndex;
   let lowConfidenceFallback = false;
 
+  // Premium sólo si la demanda base (sin bonus) llega al 2.5: el empujón de reasoning
+  // sube el suelo (standard→high), nunca salta a premium.
+  if (index === 3 && demandBase < 2.5) {
+    notes.push(`premium exige demanda base ≥2.5 (${demandBase.toFixed(2)}) → high`);
+    index = 2;
+  }
+
+  // Threshold the probability of the option Jev actually chose, not `confidence`:
+  // they are different numbers for the same answer (e.g. probabilities.rework 0.45
+  // vs confidence 0.17), and thresholding the wrong one silently moves the bar.
+  // The bar also rises with the cost of a wrong call: premium work must be
+  // classified more certainly than merely high-tier work.
+  const kindProbability = analysis.kindProbabilities?.[analysis.kind] ?? analysis.kindConfidence;
+  const requiredConfidence = config.confidenceThreshold + (index >= 3 ? 0.25 : 0);
+
   // Confidence guard: don't spend premium money on an unsure classification.
   if (
     config.confidenceThreshold > 0 &&
-    analysis.kindConfidence > 0 &&
-    analysis.kindConfidence < config.confidenceThreshold &&
+    kindProbability > 0 &&
+    kindProbability < requiredConfidence &&
     index > 1
   ) {
-    notes.push(`low kind confidence ${analysis.kindConfidence.toFixed(2)} → standard`);
+    notes.push(
+      `low ${analysis.kind} probability ${kindProbability.toFixed(2)} < ${requiredConfidence.toFixed(2)} → standard`,
+    );
     index = 1;
     lowConfidenceFallback = true;
   }

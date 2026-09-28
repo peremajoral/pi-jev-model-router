@@ -6,14 +6,20 @@ import type { SpendSnapshot } from "./budget";
  * Typed judgments asked of the judge for a single incoming request.
  *
  * Design note: the judge judges the *task* (what it is, how hard it is, how much
- * capability it deserves). Code judges *budget* (what we can afford right now).
- * Keeping those separate means the budget policy can change without invalidating
- * the judgment, and the judgment stays a pure semantic read of the request.
+ * capability it deserves, how the user's tone reads). Code judges *budget* (what
+ * we can afford right now). Keeping those separate means the budget policy can
+ * change without invalidating the judgment, and the judgment stays a pure
+ * semantic read of the request.
  *
  * The judge itself is a cascade of local models (`winnow:e4b` → `laya:latest`
  * → `nli:latest` by default): the next model is consulted only when the
  * current one fails (server down, timeout, billing errors like TypeSafe 402) or
  * answers with low kind confidence — the "if necessary" case.
+ *
+ * When the trained judges DISAGREE and neither clears the confidence floor, the
+ * zero-shot judge (NLI) is decisive: if it sides with one of the disagreeing
+ * answers, that side wins regardless of NLI's own number — an entailment score
+ * and a calibrated confidence are different units and are never compared.
  */
 
 export interface RouteAnalysis {
@@ -28,6 +34,8 @@ export interface RouteAnalysis {
   budgetIntensityConfidence: number;
   /** Probability this request needs extended reasoning rather than recall/short edits. */
   deepReasoning: number;
+  /** Probability the user's tone signals frustration, urgency, or high stakes. */
+  sentiment: number;
   latencyMs: number;
   /** Judge model that actually answered: the primary, or the fallback that won. */
   judgeModel: string;
@@ -69,13 +77,9 @@ function buildState(input: ClassifyInput): Record<string, unknown> {
       active_model: input.activeModel ?? null,
       context_tokens_used: input.contextTokens ?? null,
     },
-    budget: {
-      spent_today_usd: input.spend.today,
-      spent_this_month_usd: input.spend.month,
-      daily_cap_usd: input.spend.dailyCap ?? null,
-      monthly_cap_usd: input.spend.monthlyCap ?? null,
-      fraction_of_budget_used: input.spend.pressure,
-    },
+    // Budget deliberately NOT sent: code owns the budget policy, and the questions
+    // instruct the judge to ignore cost. Numbers whose own instructions say to
+    // ignore them are state that can steer the answer without adding signal.
   };
 }
 
@@ -118,6 +122,15 @@ function buildQuestions(): Record<string, unknown> {
         false: "The work is recall, lookup, formatting, or a short direct change",
       },
     },
+    sentiment_escalation: {
+      type: "noul",
+      instructions:
+        "Judging only the user's tone in `request` and `conversation_excerpt` (not the technical difficulty), is the user frustrated, urgent, or under pressure? Signals: repeated failures, something broken and blocking, anger, a hard deadline, high personal stakes on the outcome.",
+      criteria: {
+        true: "The tone signals frustration, urgency, or high stakes — the user needs this to work, now",
+        false: "The tone is calm, neutral, curious, or merely conversational",
+      },
+    },
   };
 }
 
@@ -132,6 +145,7 @@ function parseAnalysis(payload: unknown, latencyMs: number, model: string): Rout
   const complexity = answers.complexity ?? {};
   const capability = answers.capability_deserved ?? {};
   const reasoning = answers.needs_deep_reasoning ?? {};
+  const sentiment = answers.sentiment_escalation ?? {};
 
   const chosenKind = typeof kind.choice === "string" ? kind.choice : "chat";
   if (!(chosenKind in TASK_KINDS)) {
@@ -147,6 +161,7 @@ function parseAnalysis(payload: unknown, latencyMs: number, model: string): Rout
     budgetIntensity: num(capability.score) ?? 1,
     budgetIntensityConfidence: num(capability.confidence) ?? 0,
     deepReasoning: num(reasoning.noul) ?? num(reasoning.noul_score) ?? 0,
+    sentiment: num(sentiment.noul) ?? num(sentiment.noul_score) ?? 0,
     latencyMs,
     judgeModel: model,
     escalated: false,
@@ -210,6 +225,37 @@ async function askModel(
   return parseAnalysis(payload, Date.now() - started, model);
 }
 
+function highestConfidence(answers: RouteAnalysis[]): RouteAnalysis {
+  return answers.reduce((best, a) => (a.kindConfidence > best.kindConfidence ? a : best));
+}
+
+/**
+ * Pick the winning answer when the cascade ran out of models (or confidence)
+ * with several judges on record.
+ *
+ * Zero-shot adjudication: when the earlier judges DISAGREE on the kind and the
+ * last judge (zero-shot NLI in the default chain) sides with one of them, that
+ * side wins. NLI's own confidence is an entailment score, not a calibrated
+ * confidence — it is never compared numerically, only used as a vote.
+ */
+function adjudicate(answers: RouteAnalysis[]): { winner: RouteAnalysis; note?: string } {
+  const earlier = answers.slice(0, -1);
+  const last = answers[answers.length - 1];
+  const earlierKinds = new Set(earlier.map((a) => a.kind));
+  if (earlierKinds.size > 1) {
+    const sided = earlier.find((a) => a.kind === last.kind);
+    if (sided) {
+      return {
+        winner: sided,
+        note:
+          `disagreement (${[...earlierKinds].join(" vs ")}), none reached the floor: ` +
+          `${last.judgeModel} adjudicated → ${sided.kind} (${sided.judgeModel})`,
+      };
+    }
+  }
+  return { winner: highestConfidence(answers) };
+}
+
 /**
  * Run one evaluation with the judge cascade.
  *
@@ -220,8 +266,10 @@ async function askModel(
  *   is skipped and the cascade moves on;
  * - a model that answers with `kindConfidence` below
  *   `escalateBelowConfidence` is kept as candidate, but the next model is also
- *   consulted ("if necessary"); the best-confidence answer wins;
- * - the first answer that clears the floor short-circuits the cascade.
+ *   consulted ("if necessary"); the first answer that clears the floor
+ *   short-circuits the cascade;
+ * - if every judge answers below the floor and the trained judges disagree, the
+ *   zero-shot judge's vote is decisive (see `adjudicate`).
  *
  * All models live on the same `endpoint`: a fallback is a different model, not
  * a different server.
@@ -237,8 +285,7 @@ export async function classifyRequest(
   const questions = buildQuestions();
   const floor = config.escalateBelowConfidence ?? 0;
 
-  let best: RouteAnalysis | undefined;
-  let answered = 0;
+  const answers: RouteAnalysis[] = [];
   let failures = 0;
   let lastError: unknown;
 
@@ -246,14 +293,14 @@ export async function classifyRequest(
     if (externalSignal?.aborted) throw new JevError("aborted");
     try {
       const analysis = await askModel(model, state, questions, config, apiKey, externalSignal);
-      answered += 1;
-      if (!best || analysis.kindConfidence > best.kindConfidence) best = analysis;
-      if (best.kindConfidence >= floor) {
+      answers.push(analysis);
+      if (highestConfidence(answers).kindConfidence >= floor) {
+        const best = highestConfidence(answers);
         best.escalated = best.judgeModel !== config.jevModel;
-        if (best.escalated || answered > 1) {
+        if (best.escalated || answers.length > 1) {
           best.escalationNote =
             `cascade: ${best.judgeModel} answered (kind conf ${best.kindConfidence.toFixed(2)}); ` +
-            `${answered} answered, ${failures} failed`;
+            `${answers.length} answered, ${failures} failed`;
         }
         return best;
       }
@@ -265,12 +312,15 @@ export async function classifyRequest(
     }
   }
 
-  if (best) {
-    best.escalated = best.judgeModel !== config.jevModel;
-    best.escalationNote =
-      `below floor: ${answered} answered, ${failures} failed, none reached ${floor}; ` +
-      `kept ${best.judgeModel} (kind conf ${best.kindConfidence.toFixed(2)})`;
-    return best;
+  if (answers.length === 0) {
+    throw lastError instanceof Error ? lastError : new JevError("no judge answered");
   }
-  throw lastError instanceof Error ? lastError : new JevError("no judge answered");
+
+  const { winner, note } = answers.length > 1 ? adjudicate(answers) : { winner: answers[0], note: undefined };
+  winner.escalated = winner.judgeModel !== config.jevModel;
+  winner.escalationNote =
+    (note ??
+      `below floor: ${answers.length} answered, ${failures} failed, none reached ${floor}`) +
+    `; kept ${winner.judgeModel} (kind conf ${winner.kindConfidence.toFixed(2)})`;
+  return winner;
 }
