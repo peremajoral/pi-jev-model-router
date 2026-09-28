@@ -1,0 +1,86 @@
+{
+  "defaultModel": "deepseek-v4.1-flash:cloud",
+  "defaultProvider": "ollama",
+  "lastChangelogVersion": "0.87.1",
+  "packages": [
+    "npm:pi-jev-model-router"
+  ],
+  "extensions": [],
+  "skills": [
+    "-skills/workmux/SKILL.md",
+    "-skills/cloudflare/SKILL.md",
+    "-skills/cloudflare-email-service/SKILL.md",
+    "-skills/cloudflare-one/SKILL.md",
+    "-skills/cloudflare-one-migrations/SKILL.md",
+    "-skills/durable-objects/SKILL.md",
+    "-skills/lemmajevgaun/SKILL.md",
+    "-skills/lemmalog-typesafe/SKILL.md",
+    "-skills/neon-postgres/SKILL.md",
+    "-skills/sandbox-migrate-to-next/SKILL.md",
+    "-skills/sandbox-next/SKILL.md",
+    "-skills/sandbox-sdk/SKILL.md",
+    "-skills/sandbox-stable/SKILL.md",
+    "-skills/turnstile-spin/SKILL.md",
+    "-skills/workers-best-practices/SKILL.md"
+  ],
+  "defaultThinkingLevel": "high",
+  "subagents": {
+    "agentOverrides": {
+      "worker": {
+        "model": "glm-5.3-flash:cloud",
+        "fallbackModels": [
+          "deepseek-v4.1-flash:cloud"
+        ],
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "inheritSkills": false
+      },
+      "reviewer": {
+        "model": "glm-5.3:cloud",
+        "fallbackModels": [
+          "glm-5.3-flash:cloud",
+          "deepseek-v4.1-flash:cloud"
+        ],
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "inheritSkills": false
+      },
+      "oracle": {
+        "model": "glm-5.3:cloud",
+        "fallbackModels": [
+          "glm-5.3-flash:cloud",
+          "kimi-k3:cloud"
+        ],
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "inheritSkills": false
+      },
+      "context-builder": {
+        "model": "glm-5.3-flash:cloud",
+        "fallbackModels": [
+          "deepseek-v4.1-flash:cloud"
+        ],
+        "thinking": "medium",
+        "inheritProjectContext": true,
+        "inheritSkills": false
+      },
+      "researcher": {
+        "model": "glm-5.3-flash:cloud",
+        "fallbackModels": [
+          "deepseek-v4.1-flash:cloud",
+          "glm-5.3:cloud"
+        ],
+        "thinking": "medium",
+        "inheritProjectContext": true,
+        "inheritSkills": false
+      },
+      "planner": {
+        "disabled": true
+      },
+      "scout": {
+        "disabled": true
+      }
+    }
+  },
+  "theme": "dark"
+}

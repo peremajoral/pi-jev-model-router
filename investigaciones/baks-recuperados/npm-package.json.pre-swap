@@ -1,0 +1,25 @@
+{
+  "name": "pi-extensions",
+  "private": true,
+  "dependencies": {
+    "@agney/pi-honcho-memory": "^0.1.0",
+    "@complexthings/pi-dynamic-context-pruning": "^1.0.7",
+    "@lnilluv/pi-ralph-loop": "^2.1.0",
+    "@luxusai/pi-hindsight": "^0.13.0",
+    "@rhobot-dev/rho": "^0.1.12",
+    "pi-agent-browser": "^0.1.0",
+    "pi-boomerang": "^0.7.0",
+    "pi-gitnexus": "^0.6.4",
+    "pi-interactive-shell": "^0.17.0",
+    "pi-intercom": "^0.14.0",
+    "pi-interview": "^0.12.0",
+    "pi-jev-model-router": "^0.3.0",
+    "pi-mcp-adapter": "^2.37.0",
+    "pi-memory-honcho": "^0.3.3",
+    "pi-messenger": "^0.15.2",
+    "pi-rtk-optimizer": "^0.9.0",
+    "pi-schedule-prompt": "^0.4.1",
+    "pi-subagents": "^0.71.0",
+    "pi-web-access": "^0.31.0"
+  }
+}
