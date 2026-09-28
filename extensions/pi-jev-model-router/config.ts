@@ -91,6 +91,18 @@ export interface JevRouterConfig {
   enabled: boolean;
   mode: Mode;
   /**
+   * Judge cascade: consulted in order when the primary fails (server down,
+   * timeout, billing error like TypeSafe 402) or answers with kind confidence
+   * below `escalateBelowConfidence`. All models live on the same `endpoint`.
+   * Empty disables the cascade (primary only).
+   */
+  judgeFallbacks: string[];
+  /**
+   * kindConfidence below which the next fallback judge is also consulted;
+   * the most confident answer wins. 0 disables low-confidence escalation.
+   */
+  escalateBelowConfidence: number;
+  /**
    * When false, the built-in model chains (`routes`, `kindModels`) are dropped
    * entirely, so routing uses only the models your config provides. Other
    * defaults (endpoint, timeouts, budget, kind floors) still apply.
@@ -134,9 +146,14 @@ export const DEFAULT_CONFIG: JevRouterConfig = {
   mode: "auto",
   useDefaultModels: true,
   apiKeyEnv: "TYPESAFE_API_KEY",
-  endpoint: "https://api.typesafe.ai/v1/systemone",
-  jevModel: "jev-latest",
-  timeoutMs: 3500,
+  apiKey: undefined,
+  // Local judge (Ollaya) serves the same systemone contract TypeSafe does;
+  // no API key is needed for a local endpoint (see local.ts).
+  endpoint: "http://127.0.0.1:11435/v1/systemone",
+  jevModel: "winnow:e4b",
+  judgeFallbacks: ["laya:latest", "nli:latest"],
+  escalateBelowConfidence: 0.5,
+  timeoutMs: 35000,
   minPromptChars: 12,
   historyTurns: 4,
   confidenceThreshold: 0.34,
@@ -347,25 +364,5 @@ function emptyChains(): Record<Tier, RouteChain> {
   return { quick: [], standard: [], high: [], premium: [] };
 }
 
-export function hasApiKey(config: JevRouterConfig): boolean {
-  if (config.apiKey && config.apiKey.trim().length > 0) return true;
-  const value = process.env[config.apiKeyEnv];
-  return typeof value === "string" && value.trim().length > 0;
-}
-
-export function apiKeyFor(config: JevRouterConfig): string {
-  return config.apiKey?.trim() || process.env[config.apiKeyEnv]?.trim() || "";
-}
-
-export const TASK_KINDS: Record<string, string> = {
-  plan: "Deciding what to build, sequencing work, or designing an approach before editing",
-  implement: "Writing or changing code, scripts, or configuration to produce a concrete result",
-  write: "Producing prose, documentation, comments, or other non-code content from scratch",
-  debug: "Diagnosing a failure, error, or unexpected behavior and finding its root cause",
-  refactor: "Restructuring existing code without changing intended behavior",
-  review: "Auditing code, a diff, a document, or a plan for problems and risks",
-  research: "Searching, reading, and synthesizing external information or unfamiliar APIs",
-  explain: "Answering a question or explaining how something works",
-  operate: "Running commands, tooling, git, deploys, or environment setup",
-  chat: "Small talk, acknowledgements, or a request with no real work attached",
-};
+export { hasApiKey, apiKeyFor, isLocalEndpoint, hostOf, LOCAL_HOSTS, LOCAL_JUDGE_KEY } from "./local";
+export { TASK_KINDS } from "./kinds";

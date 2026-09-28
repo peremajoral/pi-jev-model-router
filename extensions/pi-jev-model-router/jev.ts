@@ -1,14 +1,19 @@
 import type { JevRouterConfig } from "./config";
-import { TASK_KINDS } from "./config";
+import { TASK_KINDS } from "./kinds.ts";
 import type { SpendSnapshot } from "./budget";
 
 /**
- * Typed judgments asked of Jev for a single incoming request.
+ * Typed judgments asked of the judge for a single incoming request.
  *
- * Design note: Jev judges the *task* (what it is, how hard it is, how much
+ * Design note: the judge judges the *task* (what it is, how hard it is, how much
  * capability it deserves). Code judges *budget* (what we can afford right now).
  * Keeping those separate means the budget policy can change without invalidating
  * the judgment, and the judgment stays a pure semantic read of the request.
+ *
+ * The judge itself is a cascade of local models (`winnow:e4b` → `laya:latest`
+ * → `nli:latest` by default): the next model is consulted only when the
+ * current one fails (server down, timeout, billing errors like TypeSafe 402) or
+ * answers with low kind confidence — the "if necessary" case.
  */
 
 export interface RouteAnalysis {
@@ -24,6 +29,12 @@ export interface RouteAnalysis {
   /** Probability this request needs extended reasoning rather than recall/short edits. */
   deepReasoning: number;
   latencyMs: number;
+  /** Judge model that actually answered: the primary, or the fallback that won. */
+  judgeModel: string;
+  /** True when the winning answer came from a fallback model, not the primary. */
+  escalated: boolean;
+  /** Audit note when the cascade consulted more than one judge. */
+  escalationNote?: string;
   usage?: { input_tokens: number; output_tokens: number };
 }
 
@@ -37,12 +48,15 @@ export interface ClassifyInput {
 }
 
 export class JevError extends Error {
+  readonly status?: number;
+
   constructor(
     message: string,
-    readonly status?: number,
+    status?: number,
   ) {
     super(message);
     this.name = "JevError";
+    this.status = status;
   }
 }
 
@@ -111,7 +125,7 @@ function num(value: unknown): number | undefined {
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
-function parseAnalysis(payload: unknown, latencyMs: number): RouteAnalysis {
+function parseAnalysis(payload: unknown, latencyMs: number, model: string): RouteAnalysis {
   const root = payload as { answers?: Record<string, any>; usage?: { input_tokens?: number; output_tokens?: number } };
   const answers = root.answers ?? {};
   const kind = answers.task_kind ?? {};
@@ -134,6 +148,8 @@ function parseAnalysis(payload: unknown, latencyMs: number): RouteAnalysis {
     budgetIntensityConfidence: num(capability.confidence) ?? 0,
     deepReasoning: num(reasoning.noul) ?? num(reasoning.noul_score) ?? 0,
     latencyMs,
+    judgeModel: model,
+    escalated: false,
     usage:
       root.usage && num(root.usage.input_tokens) !== undefined
         ? { input_tokens: root.usage.input_tokens ?? 0, output_tokens: root.usage.output_tokens ?? 0 }
@@ -178,9 +194,11 @@ async function postWithRetry(
   throw lastError instanceof Error ? lastError : new JevError("TypeSafe request failed");
 }
 
-/** Run one Jev evaluation (4 questions, parallel server-side) for the prompt. */
-export async function classifyRequest(
-  input: ClassifyInput,
+/** Ask one judge model; returns the typed analysis or throws JevError. */
+async function askModel(
+  model: string,
+  state: Record<string, unknown>,
+  questions: Record<string, unknown>,
   config: JevRouterConfig,
   apiKey: string,
   externalSignal?: AbortSignal,
@@ -188,11 +206,71 @@ export async function classifyRequest(
   const timeout = AbortSignal.timeout(config.timeoutMs);
   const signal = externalSignal ? AbortSignal.any([timeout, externalSignal]) : timeout;
   const started = Date.now();
-  const payload = await postWithRetry(
-    config,
-    apiKey,
-    { state: buildState(input), model: config.jevModel, questions: buildQuestions() },
-    signal,
-  );
-  return parseAnalysis(payload, Date.now() - started);
+  const payload = await postWithRetry(config, apiKey, { state, model, questions }, signal);
+  return parseAnalysis(payload, Date.now() - started, model);
+}
+
+/**
+ * Run one evaluation with the judge cascade.
+ *
+ * Models are consulted in order — the primary (`jevModel`), then
+ * `judgeFallbacks` — and the most confident kind answer wins:
+ *
+ * - a model that fails (server down, timeout, billing error like TypeSafe 402)
+ *   is skipped and the cascade moves on;
+ * - a model that answers with `kindConfidence` below
+ *   `escalateBelowConfidence` is kept as candidate, but the next model is also
+ *   consulted ("if necessary"); the best-confidence answer wins;
+ * - the first answer that clears the floor short-circuits the cascade.
+ *
+ * All models live on the same `endpoint`: a fallback is a different model, not
+ * a different server.
+ */
+export async function classifyRequest(
+  input: ClassifyInput,
+  config: JevRouterConfig,
+  apiKey: string,
+  externalSignal?: AbortSignal,
+): Promise<RouteAnalysis> {
+  const models = [config.jevModel, ...(config.judgeFallbacks ?? [])];
+  const state = buildState(input);
+  const questions = buildQuestions();
+  const floor = config.escalateBelowConfidence ?? 0;
+
+  let best: RouteAnalysis | undefined;
+  let answered = 0;
+  let failures = 0;
+  let lastError: unknown;
+
+  for (const model of models) {
+    if (externalSignal?.aborted) throw new JevError("aborted");
+    try {
+      const analysis = await askModel(model, state, questions, config, apiKey, externalSignal);
+      answered += 1;
+      if (!best || analysis.kindConfidence > best.kindConfidence) best = analysis;
+      if (best.kindConfidence >= floor) {
+        best.escalated = best.judgeModel !== config.jevModel;
+        if (best.escalated || answered > 1) {
+          best.escalationNote =
+            `cascade: ${best.judgeModel} answered (kind conf ${best.kindConfidence.toFixed(2)}); ` +
+            `${answered} answered, ${failures} failed`;
+        }
+        return best;
+      }
+    } catch (error) {
+      // Abort is the caller's call, not a judge failure: propagate immediately.
+      if (error instanceof JevError && error.message === "aborted") throw error;
+      failures += 1;
+      lastError = error;
+    }
+  }
+
+  if (best) {
+    best.escalated = best.judgeModel !== config.jevModel;
+    best.escalationNote =
+      `below floor: ${answered} answered, ${failures} failed, none reached ${floor}; ` +
+      `kept ${best.judgeModel} (kind conf ${best.kindConfidence.toFixed(2)})`;
+    return best;
+  }
+  throw lastError instanceof Error ? lastError : new JevError("no judge answered");
 }

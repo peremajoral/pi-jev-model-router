@@ -94,14 +94,18 @@ pi update --extensions        # update packages
 pi remove npm:pi-jev-model-router
 ```
 
-### 3. Set your TypeSafe API key
+### 3. Judge access
+
+The default judge is **local**: Ollaya serving the systemone contract on
+`127.0.0.1:11435` (winnow:e4b, cascading to laya and nli when needed). No API
+key is required. To use the cloud TypeSafe judge instead, set
+`endpoint: "https://api.typesafe.ai/v1/systemone"` in the config file and:
 
 ```bash
 export TYPESAFE_API_KEY=...
 ```
 
-Add it to your shell profile to persist it. You can also set `apiKey` directly in
-the config file (see below).
+You can also set `apiKey` directly in the config file (see below).
 
 ### 4. Use it
 
@@ -420,10 +424,12 @@ entirely when a model's pricing is unknown, so it never blocks on guesses. Set
 | `enabled` | `true` | Master switch |
 | `useDefaultModels` | `true` | `false` drops the built-in model chains so only your config's models are used |
 | `mode` | `"auto"` | `auto` \| `confirm` \| `notify` |
-| `apiKeyEnv` / `apiKey` | `TYPESAFE_API_KEY` | TypeSafe credentials |
-| `endpoint` | `https://api.typesafe.ai/v1/systemone` | Evaluation endpoint |
-| `jevModel` | `"jev-latest"` | Jev model alias |
-| `timeoutMs` | `3500` | Jev request timeout (retries 429/529) |
+| `apiKeyEnv` / `apiKey` | `TYPESAFE_API_KEY` | TypeSafe credentials. **Not needed for a local endpoint** (e.g. Ollaya on `127.0.0.1`) — a placeholder key is sent instead |
+| `endpoint` | `http://127.0.0.1:11435/v1/systemone` | Judge endpoint. Defaults to the local judge (Ollaya serves the same systemone contract TypeSafe does); point it at `https://api.typesafe.ai/v1/systemone` to use the cloud judge |
+| `jevModel` | `"winnow:e4b"` | Primary judge model |
+| `judgeFallbacks` | `["laya:latest", "nli:latest"]` | Judge cascade: consulted in order when the primary fails (server down, timeout, billing errors like TypeSafe 402) or answers below `escalateBelowConfidence`; the most confident answer wins. All models live on the same `endpoint`. Empty = primary only |
+| `escalateBelowConfidence` | `0.5` | kind-confidence below which the next fallback is also consulted ("if necessary"). `0` disables escalation |
+| `timeoutMs` | `35000` | Per-model judge timeout (retries 429/529). Local cold model loads are slow (~25–30 s measured); 35 s covers them |
 | `minPromptChars` | `12` | Below this, a prompt counts as a continuation (a short *first* message is still routed) |
 | `historyTurns` | `4` | Conversation turns included as Jev state |
 | `confidenceThreshold` | `0.34` | Below this, fall back to `standard` instead of spending premium |
@@ -440,8 +446,11 @@ entirely when a model's pricing is unknown, so it never blocks on guesses. Set
 ## Failure behaviour
 
 Routing never blocks your turn. A missing key, network error, timeout (default
-3.5 s, retried on 429/529), or unknown model means: warn in the status line and
-run the prompt on the current model unchanged. Prompts starting with `/`, pure
+35 s per model, retried on 429/529), or unknown model means: warn in the status line and
+run the prompt on the current model unchanged. Judge failures fall through the
+cascade (`winnow:e4b` → `laya:latest` → `nli:latest`): the first model that
+answers with enough confidence wins, and if every model fails the router keeps
+the current model. Prompts starting with `/`, pure
 acknowledgements (`yes`, `continue`, …), and messages sent by other extensions
 are never routed.
 
